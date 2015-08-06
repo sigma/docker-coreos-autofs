@@ -1,0 +1,163 @@
+/* include/config.h.in.  Generated from configure.in by autoheader.  */
+
+/* leave this alone */
+#undef ENABLE_EXT_ENV
+
+/* Enable forced shutdown on USR1 signal */
+#undef ENABLE_FORCED_SHUTDOWN
+
+/* Enable exit, ignoring busy mounts */
+#undef ENABLE_IGNORE_BUSY_MOUNTS
+
+/* Disable use of locking when spawning mount command */
+#undef ENABLE_MOUNT_LOCKING
+
+/* define if you have E2FSCK */
+#undef HAVE_E2FSCK
+
+/* define if you have E3FSCK */
+#undef HAVE_E3FSCK
+
+/* define if you have E4FSCK */
+#undef HAVE_E4FSCK
+
+/* Define to 1 if you have the `getrpcbyname' function. */
+#undef HAVE_GETRPCBYNAME
+
+/* Define to 1 if you have the `getservbyname' function. */
+#undef HAVE_GETSERVBYNAME
+
+/* Define to 1 if you have the <inttypes.h> header file. */
+#undef HAVE_INTTYPES_H
+
+/* Define to 1 if you have the `krb5_principal_get_realm' function. */
+#undef HAVE_KRB5_PRINCIPAL_GET_REALM
+
+/* Define to 1 if you have the `ldap_create_page_control' function. */
+#undef HAVE_LDAP_CREATE_PAGE_CONTROL
+
+/* Define to 1 if you have the `ldap_parse_page_control' function. */
+#undef HAVE_LDAP_PARSE_PAGE_CONTROL
+
+/* Define if you have the Linux /proc filesystem. */
+#undef HAVE_LINUX_PROCFS
+
+/* Define to 1 if you have the <memory.h> header file. */
+#undef HAVE_MEMORY_H
+
+/* define if you have MODPROBE */
+#undef HAVE_MODPROBE
+
+/* define if you have MOUNT */
+#undef HAVE_MOUNT
+
+/* define if you have MOUNT_NFS */
+#undef HAVE_MOUNT_NFS
+
+/* define if the mount command supports the -s option */
+#undef HAVE_SLOPPY_MOUNT
+
+/* Define to 1 if you have the <stdint.h> header file. */
+#undef HAVE_STDINT_H
+
+/* Define to 1 if you have the <stdlib.h> header file. */
+#undef HAVE_STDLIB_H
+
+/* Define to 1 if you have the <strings.h> header file. */
+#undef HAVE_STRINGS_H
+
+/* Define to 1 if you have the <string.h> header file. */
+#undef HAVE_STRING_H
+
+/* Define to 1 if you have the <sys/stat.h> header file. */
+#undef HAVE_SYS_STAT_H
+
+/* Define to 1 if you have the <sys/types.h> header file. */
+#undef HAVE_SYS_TYPES_H
+
+/* define if you have UMOUNT */
+#undef HAVE_UMOUNT
+
+/* Define to 1 if you have the <unistd.h> header file. */
+#undef HAVE_UNISTD_H
+
+/* Define if using YellowPages */
+#undef HAVE_YPCLNT
+
+/* Use libxml2 tsd usage workaround */
+#undef LIBXML2_WORKAROUND
+
+/* Define to the address where bug reports for this package should be sent. */
+#undef PACKAGE_BUGREPORT
+
+/* Define to the full name of this package. */
+#undef PACKAGE_NAME
+
+/* Define to the full name and version of this package. */
+#undef PACKAGE_STRING
+
+/* Define to the one symbol short name of this package. */
+#undef PACKAGE_TARNAME
+
+/* Define to the home page for this package. */
+#undef PACKAGE_URL
+
+/* Define to the version of this package. */
+#undef PACKAGE_VERSION
+
+/* define if you have E2FSCK */
+#undef PATH_E2FSCK
+
+/* define if you have E3FSCK */
+#undef PATH_E3FSCK
+
+/* define if you have E4FSCK */
+#undef PATH_E4FSCK
+
+/* define if you have LEX */
+#undef PATH_LEX
+
+/* define if you have MODPROBE */
+#undef PATH_MODPROBE
+
+/* define if you have MOUNT */
+#undef PATH_MOUNT
+
+/* define if you have MOUNT_NFS */
+#undef PATH_MOUNT_NFS
+
+/* define if you have RANLIB */
+#undef PATH_RANLIB
+
+/* define if you have RPCGEN */
+#undef PATH_RPCGEN
+
+/* define if you have UMOUNT */
+#undef PATH_UMOUNT
+
+/* define if you have YACC */
+#undef PATH_YACC
+
+/* Define to 1 if you have the ANSI C header files. */
+#undef STDC_HEADERS
+
+/* Define to 1 to use the libtirpc tsd usage workaround */
+#undef TIRPC_WORKAROUND
+
+/* Define if your C library does not provide versionsort */
+#undef WITHOUT_VERSIONSORT
+
+/* Define if using the dmalloc debugging malloc package */
+#undef WITH_DMALLOC
+
+/* Define if using Hesiod as a source of automount maps */
+#undef WITH_HESIOD
+
+/* Define if using LDAP as a source of automount maps */
+#undef WITH_LDAP
+
+/* Define to 1 if you have the libtirpc library installed */
+#undef WITH_LIBTIRPC
+
+/* Define if using SASL authentication with the LDAP module */
+#undef WITH_SASL

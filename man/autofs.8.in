@@ -1,0 +1,81 @@
+.TH AUTOFS 8 "9 Sep 1997"
+.SH NAME
+Service control for the automounter
+.SH SYNOPSIS
+If a SysV init script system is being used:
+.br
+.B @@initdir@@/autofs
+.I start|stop|restart|reload|status
+.P
+or if the systemd init system is being used:
+.br
+.B systemctl
+.I start|stop|restart|reload|status
+.B autofs.service
+.SH "DESCRIPTION"
+.B autofs
+controls the operation of the
+.BR automount (8)
+daemon(s) running on the Linux system. Usually
+.B autofs
+is invoked at system boot time with the
+.I start
+parameter and at shutdown time with the
+.I stop
+parameter. Service control actions can also be manually invoked by
+the system administrator to shut down, restart, reload or obtain
+service status.
+.P
+.SH "OPERATION"
+.B autofs
+will consult a configuration file
+.I @@autofsmapdir@@/auto.master
+(see
+.BR auto.master (5))
+by default to find mount points on the system. For each of those mount points
+.BR automount (8)
+will mount and start a thread, with the appropriate parameters, to
+manage the mount point.
+.P
+.B @@initdir@@/autofs reload
+or
+.B systemctl autofs.service reload
+will check the current auto.master map against the current automount managed
+mounts. It will terminate those daemons or threads (depending on
+.B autofs
+version) whose entries have been removed, re-read the automount maps for
+entries that have changed and start new daemons or threads for entries
+that have been added.
+.P
+If an indirect map is modified then the change will become effective immediately.
+If an indirect map uses the
+.B browse
+option, the master map contains direct mount maps or the
+.I auto.master
+map is modified then the
+.B autofs
+service control reload action must be rerun to activate the changes.
+.P
+.B @@initdir@@/autofs status
+or
+.B systemctl autofs.service status
+will display the status of,
+.BR automount (8),
+running or not. When using the systemd init system the status output includes
+somewhat more information related to the service status.
+.P
+.B systemctl(1)
+has more functions than the actions mentioned here, see
+.B systemctl(1)
+for more information.
+.SH "SEE ALSO"
+.BR automount (8),
+.BR autofs (5),
+.BR autofs.conf (5),
+.BR auto.master (5).
+.BR autofs_ldap_auth.conf (5)
+.BR systemctl(1)
+.SH AUTHOR
+This manual page was written by Christoph Lameter <chris@waterf.org>,
+for the Debian GNU/Linux system.  Edited by H. Peter Anvin
+<hpa@transmeta.com> and Ian Kent <raven@themaw.net>.

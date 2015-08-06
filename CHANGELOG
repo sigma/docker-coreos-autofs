@@ -1,0 +1,1191 @@
+21/04/2015 autofs-5.1.1
+=======================
+- fix compile error in defaults.c.
+- add serialization to sasl init.
+- dont allocate dev_ctl_ops too early.
+- fix incorrect round robin host detection.
+- fix race accessing qdn in get_query_dn().
+- fix leak in cache_push_mapent().
+- fix config entry read buffer not checked.
+- fix FILE pointer check in defaults_read_config().
+- fix memory leak in conf_amd_get_log_options().
+- fix signed comparison in inet_fill_net().
+- fix buffer size checks in get_network_proximity().
+- fix leak in get_network_proximity().
+- fix buffer size checks in merge_options().
+- check amd lex buffer len before copy.
+- add return check in ldap check_map_indirect().
+- check host macro is set before use.
+- check options length before use in parse_amd.c.
+- fix some out of order evaluations in parse_amd.c.
+- fix copy and paste error in dup_defaults_entry().
+- fix leak in parse_mount().
+- add mutex call return check in defaults.c.
+- force disable browse mode for amd format maps.
+- fix hosts map options check in lookup_amd_instance().
+- fix memory leak in create_client().
+- fix memory leak in get_exports().
+- fix memory leak in get_defaults_entry().
+- fix out of order clearing of options buffer.
+- fix reset amd lexer scan buffer.
+- ignore multiple commas in options strings.
+- fix typo in flagdir configure option.
+- clarify multiple mounts description.
+- gaurd against incorrect umount return.
+- update man page autofs(8) for systemd.
+- dont pass sloppy option for other than nfs mounts.
+- make service want network-online.
+- fix fix master map type check.
+- init qdn before use in get_query_dn().
+- fix typo in update_hosts_mounts().
+- fix hosts map update on reload.
+- make negative cache update consistent for all lookup modules.
+- ensure negative cache isn't updated on remount.
+- dont add wildcard to negative cache.
+- add a prefix to program map stdvars.
+- add config option to force use of program map stdvars.
+- fix incorrect check in parse_mount().
+- handle duplicates in multi mounts.
+- revert special case cifs escapes.
+- fix map option parsing for 'strictatime'.
+- fix showmount search in auto.net.
+- remove obsolete comment in auto.net.
+- fix macro usage in lookup_program.c.
+- fix gcc5 complaints.
+- remove unused offset handling code.
+- fix mount as you go offset selection.
+- link daemon with pthread library (Debian patch).
+- manpage corrections (Debian patch).
+- fix manpages hyphenation (Debian patch).
+
+04/06/2014 autofs-5.1.0
+=======================
+- fix mistake in assignment.
+- add amd map format parser.
+- check for non existent negative entries in lookup_ghost().
+- fix reset flex scan buffer on init.
+- fix fix negative status being reset on map read.
+- amd lookup update lookup ldap to handle amd keys.
+  - inadvertantly dropped from initial series.
+- amd lookup update lookup hesiod to handle amd keys.
+  - inadvertantly dropped from initial series.
+- fix wildcard key lookup.
+- fix out of order amd timestamp lookup.
+- fix ldap default schema config.
+- fix ldap default master map name config.
+- fix map format init in lookup_init().
+- fix incorrect max key length in defaults get_hash().
+- fix xfn sets incorrect lexer state.
+- fix old style key lookup.
+- fix expire when server not responding.
+- fix ldap_uri config update.
+- fix typo in conf_load_autofs_defaults().
+- fix hash on confg option add and delete.
+- add plus to path match pattern.
+- fix multi entry ldap option handling.
+- cleanup options in amd_parse.c
+- allow empty value for some map options.
+- allow empty value in macro selectors.
+
+28/03/2014 autofs-5.0.9
+=======================
+- fix undefined authtype_requires_creds err if ldap enabled but without sasl.
+- fix master map type check.
+- fix task manager not getting signaled.
+- allow --with-systemd to take a path arg.
+- fix WITH_LIBTIRPC function name.
+- fix ipv6 libtirpc getport.
+- fix ipv6 link local address handling.
+- fix fix ipv6 libtirpc getport.
+- get_nfs_info() should query portmapper if port is not given.
+- fix rpc_portmap_getport() proto not set.
+- fix protmap not trying proto v2.
+- fix rpc_getport() when libtirpc is disabled.
+- fix rpc_getrpcbport() when libtirpc is disabled.
+- don't reset errno.
+- extend fix for crash due to thread unsafe use of libldap.
+- fix deadlock in init_ldap_connection.
+- fix options compare.
+- fix negative status being reset on map read.
+- check for existing offset mount before mounting.
+- fix max() declaration.
+- fix symlink fail message in mount_bind.c.
+- fix cache readlock not taken on lookup.
+- pass map_source as function paramter where possible.
+- check for bind onto self in mount_bind.c.
+- fix symlink expire.
+- dont clobber mapent for negative cache.
+- fix macro_addvar() and move init to main thread.
+- change walk_tree() to take ap.
+- add negative cache lookup to hesiod lookup.
+- fix external env configure.
+- make autofs(5) consistent with auto.master(5).
+- fix map source with type lookup.
+- fix lookup_nss_mount() map lookup.
+- dont ignore null cache entries on multi mount umount.
+- fix inconsistent error returns in handle_packet_missing_direct().
+- simple coverity fixes.
+- fix fix options compare.
+- use open(2) instead of access(2) to trigger dependent mounts.
+- fix fix map source with type lookup.
+- fixes for samples/auto.master.
+- fix variable substitution description.
+- fix incorrect append options description in README.v5-release.
+- add amd map format parser.
+
+17/10/2013 autofs-5.0.8
+=======================
+- fix nobind sun escaped map entries.
+- fix use cache entry after free in lookup_prune_one_cache().
+- fix ipv6 proximity calculation.
+- fix parse buffer initialization.
+- fix typo in automount(8).
+- dont wait forever to restart.
+- add timeout option description to man page.
+- fix null map entry order handling.
+- make description of default MOUNT_WAIT setting clear.
+- configure.in: allow cross compilation.
+- README: update mailing list subscription info.
+- allow non root user to check status.
+- fix recursive mount deadlock.
+- increase file map read buffer size.
+- handle new location of systemd.
+- fix map entry duplicate offset detection.
+- Allow nsswitch.conf to not contain "automount:" lines.
+- fix nobind man page description.
+- fix submount offset delete.
+- fix init script status return.
+- fix use get_proximity() without libtirpc.
+- don't use dirent d_type to filter out files in scandir()
+- don't schedule new alarms after readmap.
+- use numeric protocol ids instead of protoent structs.
+- lib/defaults.c: use WITH_LDAP conditional around LDAP types.
+- make yellow pages support optional.
+- modules/replicated.c: use sin6_addr.s6_addr32.
+- workaround missing GNU versionsort extension.
+- dont fail on master map self include.
+- fix wildcard multi map regression.
+- fix file descriptor leak when reloading the daemon.
+- depricate nosymlink pseudo option.
+- add symlink pseudo option.
+- fix requires in spec file.
+- fix libtirpc build option to require libtirpc-devel if needed.
+- fix systemd unidir in spec file.
+- document browse option in man page.
+- fix some automount(8) typos.
+- syncronize handle_mounts() shutdown.
+- fix submount tree not all expiring.
+- make dump maps check for duplicate indirect mounts.
+- document allowed map sources in auto.master.
+- add enable sloppy mount option to configure.
+- fix interface address null check.
+- dont probe rdma mounts.
+- fix master map mount options matching.
+- fix master map bogus keywork match.
+- fix fix map entry duplicate offset detection.
+- probe each nfs version in turn for singleton mounts.
+- add changlog entry for coverity fixes.
+- fix probe each nfs version in turn for singleton mounts.
+- misc man page fixes.
+- fix add null check in parse_server_string().
+- don't override LDFLAGS in make rules.
+- fix a couple of compiler warnings.
+- add after sssd dependency to unit file.
+- dont start readmap unless ready.
+- fix crash due to thread unsafe use of libldap.
+- fix compile error with heimdal support enabled.
+- fix typo forced-shutdown should be force-shutdown.
+- fix hesiod check error and use correct $(LIBS) setting.
+- fix dead LDAP symbolic link when LDAP support is disabled.
+- add missing libtirpc lib to mount_nfs.so when TIRPC enabled.
+- use compiler determined by configure instead of hard-coded ones.
+- remove hard-coded STRIP variable.
+- use LIBS for link libraries.
+- unbundle NOTSTRIP from DEBUG so they dont depend on each other.
+- fix compilation of lookup_ldap.c without sasl.
+- fix dumpmaps multi output.
+- try and cleanup after dumpmaps.
+- teach dumpmaps to output simple key value pairs.
+- fix syncronize handle_mounts() shutdown.
+- fix fix wildcard multi map regression.
+- improve timeout option description.
+- only probe specific nfs version if requested.
+- fix bad mkdir permission on create.
+- setup program map env from macro table.
+- add short host name standard marco variable.
+- fix get_nfs_info() probe.
+- fix portmap lookup.
+- add std vars to program map invocation.
+- samples/auto.smb: add logic to obtain credentials.
+
+25/07/2012 autofs-5.0.7
+=======================
+- fix ipv6 name for lookup fix.
+- improve mount location error reporting.
+- fix paged query more results check.
+- fix dumpmaps not reading maps.
+- fix result null check in read_one_map().
+- fix LDAP result leaks on error paths.
+- fix fix LDAP result leaks on error paths.
+- code analysis fixes part 1.
+- fix not bind mounting local filesystem.
+- add "dir" map-type.
+- fix wait for master source mutex.
+- fix submount shutdown race.
+- fix fix map source check in file lookup.
+- add disable move mount configure option.
+- fix ipv6 name lookup check.
+- fix ipv6 rpc calls.
+- fix ipv6 configure check.
+- add piddir to configure.
+- add systemd unit support.
+- remove empty command line arguments (passed by systemd).
+- fix rpc build error.
+- fix improve mount location error reporting.
+- fix fix wait for master source mutex.
+- add sss lookup module.
+- teach automount about sss source.
+- fix init script usage message.
+- ignore duplicate exports in auto.net.
+- add kernel verion check function.
+- add function to check mount.nfs version.
+- reinstate singleton mount probe.
+- rework error return handling in rpc code.
+- catch EHOSTUNREACH and bail out early.
+- systemd support fixes.
+- check scandir() return value.
+- allow for kernel packet size change (in kernel 3.3.0+).
+- fix function to check mount.nfs version.
+- fix typo in libtirpc file name.
+- fix rework error return handling in rpc code.
+- allow MOUNT_WAIT to override probe.
+- improve UDP RPC timeout handling.
+- use strtok_r() in linux_version_code().
+- fix sss wildcard match.
+- fix dlopen() error handling in sss module.
+- fix configure string length tests for sss library.
+- report map not read when debug logging.
+- duplicate parent options for included maps.
+- update ->timeout() function to not return timeout.
+- move timeout to map_source (allow per direct map timeout).
+- fix kernel verion check of version components.
+- dont retry ldap connect if not required.
+- fix initialization in rpc create_client().
+- fix libtirpc name clash.
+- check if /etc/mtab is a link to /proc/self/mounts.
+- fix nfs4 contacts portmap.
+- make autofs wait longer for shutdown completion.
+- fix sss map age not updated.
+- fix remount deadlock.
+- fix umount recovery of busy direct mount.
+- fix offset mount point directory removal.
+- fix remount of multi mount.
+- fix devce ioctl alloc path check.
+- add hup signal handling to hosts map.
+- fix systemd argument passing.
+- fix get_nfs_info() can incorrectly fail.
+- fix offset directory removal.
+- check negative cache much earlier.
+- dont use pthread_rwlock_tryrdlock().
+- mount_nfs.so to honor explicit NFSv4 requests.
+- mount_nfs.so fix port=0 option behavior v3.
+- documentation fix some typos and misleading comments.
+
+28/06/2011 autofs-5.0.6
+-----------------------
+- fix included map read fail handling.
+- refactor ldap sasl bind handling.
+- add mount wait timeout parameter.
+- special case cifs escapes.
+- fix compile fail with when LDAP is excluded.
+- more code analysis corrections (and fix a typo in an init script).
+- fix backwards #ifndef INET6.
+- fix stale initialization for file map instance.
+- add "preen" fsck for ext4 mounts.
+- don't use master_lex_destroy() to clear parse buffer.
+- make documentation for set-log-priority clearer.
+- fix timeout in connect_nb().
+- fix pidof init script usage.
+- check for path mount location in generic module.
+- dont fail mount on access fail.
+- fix rpc fail on large export list.
+- fix memory leak on reload.
+- update kernel patches for 2.6.18 and 2.6.19.
+- dont connect at ldap lookup module init.
+- fix random selection option.
+- fix disable timeout.
+- fix strdup() return value check (Leonardo Chiquitto).
+- fix reconnect get base dn.
+- add missing sasl mutex callbacks.
+- fix get query dn failure.
+- fix ampersand escape in auto.smb.
+- add locality as valid ldap master map attribute.
+- add locality as valid ldap master map attribute fix.
+- add simple bind authentication.
+- fix master map source server unavailable handling.
+- add autofs_ldap_auth.conf man page.
+- fix random selection for host on different network.
+- make redhat init script more lsb compliant.
+- don't hold lock for simple mounts.
+- fix remount locking.
+- fix wildcard map entry match.
+- fix parse_sun() module init.
+- dont check null cache on expire.
+- fix null cache race.
+- fix cache_init() on source re-read.
+- fix mapent becomes negative during lookup.
+- check each dc server individually.
+- fix negative cache included map lookup.
+- remove state machine timed wait.
+- remove extra read master map call.
+- fix error handing in do_mount_indirect().
+- expire thread use pending mutex.
+- remove ERR_remove_state() openssl call.
+- fix init script restart option.
+- fix init script status privilege error.
+- always read file maps mount lookup map read fix.
+- fix direct map not updating on reread.
+- add external bind method.
+- fix add simple bind auth.
+- add option to dump configured automount maps.
+- use weight only for server selection.
+- fix isspace() wild card substition.
+- auto adjust ldap page size.
+- fix prune cache valid check.
+- fix mountd vers retry.
+- fix expire race.
+- replace GPLv3 code.
+- fix paged ldap map read.
+- fix next task list update.
+- fix stale map read.
+- fix null cache clean.
+- automount(8) man page correction.
+- fix out of order locking in readmap.
+- include ip address in debug logging.
+- mount using address for DNS round robin host names.
+- reset negative status on cache prune.
+- remove master_mutex_unlock() leftover.
+- fix sanity checks for brackets in server name.
+- fix lsb service name in init script.
+- fix map source check in file lookup.
+- fix simple bind without SASL support.
+- fix sasl bind host name selection.
+- add nobind option.
+- add base64 password encode.
+- fix ipv6 name for lookup.
+- fix libtirpc ipv6 check.
+
+03/09/2009 autofs-5.0.5
+-----------------------
+- fix dumb libxml2 check
+- fix nested submount expire deadlock.
+- fix negative caching for non-existent map keys.
+- use CLOEXEC flag.
+- fix select(2) fd limit.
+- make hash table scale to thousands of entries (Paul Wankadia,
+  Valerie Aurora Henson).
+- clear the quoted flag after each character from program map input.
+- use CLOEXEC flag for setmntent also.
+- fix hosts map use after free.
+- fix uri list locking (again).
+- check for stale SASL credentials upon connect fail.
+- add "forcestart" and "forcerestart" init script options to allow
+  use of 5.0.3 strartup behavior if required.
+- always read entire file map into cache to speed lookups.
+- make MAX_ERR_BUF and PARSE_MAX_BUF use easier to audit.
+- make some easy alloca replacements (Valerie Aurora Henson).
+- update to configure libtirpc if present.
+- update to provide ipv6 name and address support.
+- update to provide ipv6 address parsing.
+- easy alloca replacements fix.
+- add check for alternate libxml2 library for libxml2 tsd workaround.
+- add check for alternate libtirpc library for libtirpc tsd workaround.
+- cleanup configure defines for libtirpc.
+- add WITH_LIBTIRPC to -V status report.
+- add nfs mount protocol default configuration option.
+- fix bad token declaration in master map parser.
+- fix return start status on fail.
+- fix double free in expire_proc().
+- another easy alloca replacements fix.
+- add LSB init script parameter block.
+- fix file map lookup when reading included or nsswitch sources.
+- use misc device ioctl interface by default, if available.
+- fix call restorecon when misc device file doesn't exist.
+- clear rpc client on lookup fail.
+- fix lsb init script header.
+- fix memory leak reading master map.
+- fix st_remove_tasks() locking.
+- reset flex scanner when setting buffer.
+- zero s_magic is valid.
+- use percent hack for master map keys.
+- use intr option as hosts mount default.
+- fix kernel includes.
+- dont umount existing direct mount on master re-read.
+- fix incorrect shutdown introduced by library relaod fixes.
+- improve manual umount recovery.
+- dont fail on ipv6 address when adding host.
+- always read file maps multi map fix.
+- always read file maps key lookup fixes.
+- use srv query for domain dn.
+- fix not releasing resources when using submounts.
+- fix notify mount message path.
+- remount we created mount point fix.
+- fix double free in sasl_bind().
+- mannual umount recovery fixes.
+- fix map type info parse error.
+- fix an RPC fd leak.
+- don't block signals we expect to dump core.
+- fix pthread push order in expire_proc_direct().
+- fix libxml2 non-thread-safe calls.
+- fix direct map cache locking.
+- fix dont umount existing direct mount on reread.
+- update kernel patches.
+
+4/11/2008 autofs-5.0.4
+-----------------------
+- correct configure test for ldapr page control functions.
+- catch "-xfn" map type and issue "no supported" message.
+- correction for handling of LDAP base dns with spaces.
+- avoid using UDP for probing NFSv4 mount requests.
+- use libldap instead of libldap_r (Guillaume Rousse).
+- another fix for don't fail on empty master map.
+- fix expire working harder than needed.
+- fix unlink of mount tree incorrectly causing autofs mount fail.
+- update kernel header file linux/auto_fs4.h.
+- update fix expire working harder than needed.
+- add missing check for zero length NIS key (Wengang Wang).
+- init SASL callbacks on every ldap lookup library load.
+- fix incorrect match of map type name when included in map name.
+- fix incorrect pthreads condition handling for mount requests.
+- add check for exports automatically mounted by NFS kernel client.
+- update nsswitch parser to ignore nsswitch sources that aren't supported.
+- check for map key in (possible) alternate map sources when doing lookup.
+- eliminate redundant DNS name lookups.
+- additional fix incorrect pthreads condition handling for mount requests.
+- allow mount point directory creation for clients with an NFS root.
+- fix direct mount path length not being checked.
+- fix incorrect if check in get user info.
+- fix couple of memory leaks.
+- add command line option to override check for daemon already running.
+- don't use proc file system when checking if the daemon is running.
+- make handle_mounts startup condition distinct.
+- fix submount shutdown recovery handling.
+- avoid stat of possibly dead mount points and limit time to wait for
+  umount during expire.
+- make mount of multi-mounts wuth a root offset atomic.
+- add replicated server selection debug logging.
+- update replicated server selection documentation.
+- use /dev/urandom instead of /dev/random.
+- check for mtab pointing to /proc/mounts.
+- dynamically allocate interface config buffer.
+- update kernel patches.
+- fix fd leak at multi-mount non-fatal mount fail.
+- fix incorrect multi-mount mountpoint calcualtion.
+- fix map out of order map re-read on hup signal.
+- fix nisplus error return check and use after free error.
+- fix rootless direct multi-mount expire.
+- wait submount expire thread completion.
+- add missing uris list locking.
+- fix segv during library re-open.
+- fix incorrect pthreads condition handling for expire requests.
+- fix $mandir definition in Makefile.conf.in
+- fix init script stop function.
+- fix master map lexer eval order.
+- fix bad alloca usage.
+- add miscellaneous device node interface library.
+- use miscellaneous device node, if available, for active restart.
+- make is_mounted() use new ioctl interface, if available.
+ 
+14/01/2008 autofs-5.0.3
+-----------------------
+- include krb5.h in lookup_ldap.h (some openssl doesn't implicitly include it).
+- correct initialization of local var in parse_server_string.
+- add missing "multi" map support.
+- add multi nsswitch lookup.
+- change random multiple server selection option name to be consistent
+  with existing downstream version 4 naming.
+- fix mount point directory creation for bind mounts.
+- add quoting for exports gathered by hosts map.
+- fix wait time resolution in alarm and state queue handlers.
+- fix handling of quoted slash alone.
+- fix parse confusion between attribute and attribute value.
+- fix version passed to get_supported_ver_and_cost.
+- mark map instances stale so they aren't "cleaned" during updates.
+- fix large file compile time option.
+- don't fail on empty master map.
+- add support for the "%" hack for case insensitive attribute schemas.
+- fix "nosymlink" option handling and add desription to man page.
+- fix don't fail on empty master map.
+- if there's no "automount" entry in nsswitch.conf use "files" source.
+- add LDAP schema discovery if no schema is configured.
+- add random selection as a master map entry option.
+- fix couple of edge case parse fails of timeout option.
+- check for "*" when looking up wildcard in LDAP.
+- fix LDAP schema discovery.
+- add SEARCH_BASE configuration option.
+- work around segv at exit due to libxml2 tsd usage.
+- re-read config on HUP signal.
+- add LDAP_URI, LDAP_TIMEOUT and LDAP_NETWORK_TIMEOUT configuration options.
+- fix forground logging and add option to man page.
+- remove unjustified, nasty comment about krb5 package.
+- fix deadlock in submount mount module.
+- fix lack of ferror() checking when reading files.
+- fix typo in autofs(5) man page.
+- fix map entry expansion when undefined macro is present.
+- remove unused export validation code.
+- add dynamic logging (adapted from v4 patch from Jeff Moyer).
+- fix recursive loopback mounts (Matthias Koenig).
+- add map re-load to verbose logging.
+- fix handling of LDAP base dns with spaces.
+- handle MTAB_NOTUPDATED status return from mount.
+- when default master map, auto.master, is used also check for auto_master.
+- fix schema selection in LDAP schema discovery.
+- update negative mount timeout handling.
+- fix large group handling (Ryan Thomas).
+- fix for dynamic logging breaking non-sasl build (Guillaume Rousse)
+- eliminate NULL proc ping for singleton host or local mounts.
+- fix incorrect read/write size of startup status token (Matthias Koenig).
+- fix off-by-one error for lookup of map keys exactly 255 characters long.
+- improve handling of server not available.
+- fix LDAP_URI server selection.
+- add authentication option for using an external credential cache.
+- expand support for the "%" hack.
+- fix to quoting for exports gathered by hosts map.
+- use mount option "nosuid" for "-hosts" map unless "suid" is explicily specified.
+- second attempt fixing quoting for exports gathered by hosts map.
+- quell annoying "cannot open mount module" message.
+- fix for improve handling of server not available.
+- use mount option "nodev" for "-hosts" map unless "dev" is explicily specified.
+- add LDAP paged query handling to deal with query size restrictions (Edward Newman).
+- add additional case for "mark map instances stale so they aren't "cleaned" during updates".
+- fix race during sub-mount shutdown.
+- fix add SEARCH_BASE configuration option.
+- update kernel patches.
+
+18/06/2007 autofs-5.0.2
+-----------------------
+- fix return check for getpwuid_r and getgrgid_r.
+- give up trying to update exports list while host is mounted.
+- fix to "@network" matching.
+- check for fstab update and retry if not updated.
+- change file map lexer to allow white-space only blank lines.
+- remove macro substitution in automount.8 man page (Guillaume Rousse).
+- correct hesiod library check in configure (Guillaume Rousse).
+- drop "DEFAULT_" prefix from configuration names (Guillaume Rousse).
+- remove redundant ident macros.
+- various configure cleanups (Richard Daniel).
+- various code cleanups (Richard Daniel).
+- fixed numeric export match.
+- add option to select replicated server at random (instead of response time).
+- fix incorrect cast in directory cleanup routines.
+- fix directory creation for browse mounts.
+- fix wildcard map handling and improve nsswitch source map re-reading.
+- fix "null" domain netgroup match for "-hosts" map.
+- update kernel patches.
+- add configuration variable to control appending of global options.
+- add command option to set a global mount options string.
+- add check for labeled local filesystems (Matthias Koenig).
+- disable exports check for "-hosts" map.
+- fix memory allocation problem with global options patch.
+- fix master map lexer to admit "." in macro values (Mike Matera).
+- make ldap attribute match case insensitive.
+- add missed man page update for APPEND_OPTIONS config option.
+- add ldaps protocol support.
+  - note: it's no longer possible to multiple hosts in an ldap map spec.
+  - note: if this is needed use only the map name and configure the URI
+    entry in the ldap client configuration.
+- correct mistake in logic test in wildcard lookup.
+- fix deadlock in alarm manager module.
+- allow for older schemas that allow "*" as a key value.
+- update master map lexer to also allow "." in macro name.
+- allow for "#" and "@" in hostname validation for sshfs mounts.
+- set working directory to base of mount before invoking program map.
+- simplify alarm_handler function (Anders Blomdell).
+
+20/2/2007 autofs-5.0.1
+----------------------
+- fix typo in Fix typo in var when removing temp directory.
+- remove redundant rpath link option.
+- ignore "winbind" if it appears in "automount" nsswitch.conf.
+- fix another expire regression introduced in the "mitigate manual umount" patch.
+- correct check for busy offset mounts before offset umount.
+- make double quote handing consistent.
+- fix handling of trailing white space in wildcard lookup.
+- check fqdn of each interface when matching export access list.
+- fix race when setting task done.
+- correct return status from do_mkdir.
+- fix localhost replicated mounts not working.
+- add "condrestart" to RedHat init script.
+- add "@network" and .domain.name export check.
+- fix display map name in mount entry for "-hosts" map.
+- update kernel patches.
+
+4/1/2007 autofs-5.0.1 rc3
+-------------------------
+- fix handling of autofs specific mount options.
+- fix include check full patch for file map of same name.
+- fix cache entrys not being cleaned up on submount expire.
+- fix LDAP lookup delete cache entry only if entry doesn't exist. 
+- add missing socket close in replicated host check (Jeff Moyer).
+- remove unused option UNDERSCORETODOT from default config files.
+- make default installed master map for /net use "-hosts" instead
+  of auto.net.
+- fix included map recursive map key lookup.
+  - and fix the recursive map key lookup for browsable map case.
+- review and fix master map options update for map reload.
+- fix "-fstype=nfs4" handling.
+- fix get_query_dn not looking in subtree for LDAP search.
+- allow syntax "--timeout <secs>" for backward compatibility.
+- make masked_match independent of hostname for exports comparison.
+- fix file handle leak in nsswitch parser.
+- fix memory leak in mount and expire request processing.
+- add additional check to prevent running of cancelled tasks.
+- fix potential file handle leakage in rpc_subs.c for some failure cases.
+- fix file handle leak in included map lookup.
+- fix "-fstype=nfs4" server probing.
+- set close-on-exec flag on open files where possible.
+- fix parsing of numeric host names in LDAP map specs.
+- fix get_query_dn not looking in subtree for LDAP search (missed second
+  occurance).
+- allow additional common LDAP attributes in map dn.
+- deal with changed semantics of mkdir in 2.6.19.
+- fix macro table locking.
+- fix nsswitch parser locking.
+- allow only one master map read task at a time.
+- fix misc memory leaks.
+- mitigate manual umount of automounts where possible.
+- fix multiply recursive bind mounts.
+- check kernel module version and require 5.00 or above.
+- fix expire regression introduced in the "mitigate manual umount" patch.
+- still more on multiply recursive bind mounts.
+- fix tokenizer to distinguish between global option and dn string.
+- fix incorrect return from spawn (Gordon Lack).
+- fix parsing of bad mount mount point in master map.
+- fix use after free memory access in cache.c and lookup_yp.c.
+- eliminate use of pthread_kill to detect task completion.
+- alter nfs4 host probing to not use portmap lookup and add options
+  check for "port=" parameter.
+- correct semantics of "-null" map handling.
+- remove ability to use multiple indirect mount entries in master map.
+- expand export access checks to include missing syntax options.
+- make "-hosts" module try to be sensitive to exports list changes.
+- change mount "device" from "automount" to the map name.
+- check for buffer overflow in mount_afs.c.
+- update master map tokenizer to admit "slasify-colons" option (Capelle Bonoit).
+- update location validation to accept "_" (Fabio Olive Leite).
+- set close-on-exec flag on open sockets.
+- fix nonstrict multi-mount handling.
+- reduce thread stack to less excessive size.
+- update kernel patches.
+
+1/9/2006 autofs-5.0.1 rc2
+-------------------------
+- code cleanup.
+- fix race for current map source.
+- cthon map parser corrections.
+- cthon multi-map locking fix and current race corrections.
+- cthon shutdown expire fix.
+- cthon more map parser corrections.
+- cthon cleanup and corrections.
+- cthon more cleanup and corrections.
+- cthon correction to host validation.
+- cthon fix submount operation broken by above.
+- cthon more parser corrections and attempt to fix multi-mounts
+  with various combinations of submounts (still broken).
+- cthon fix expire of various forms of nested mounts.
+- cthon fix some shutdown races.
+- cthon corrections for above patch and fix shutdown expire.
+- cthon fix expire of wildcard and program mounts broken by above
+  patches.
+- tidy up directory cleanup and add validation check to rmdir_path.
+- remove SIGCHLD handler.
+- alter expire locking of multi-mounts to lock sub-tree instead of
+  entire tree.
+- review verbose message feedback and update.
+- correction for expire of multi-mounts.
+- spelling corrections to release notes (Jeff Moyer).
+- expire individual submounts.
+- add ino_index locking.
+- fix nested submount expiring away when pwd is base of submount.
+- more expire re-work to cope better with shutdown following cthon tests.
+- allow hostname to start with numeric when validating.
+- fix included map lookup.
+- fix directory cleanup on expire.
+- fix task cancelation at shutdown.
+- fix included map wild card key lookup.
+- fix task cancelation at shutdown (more).
+- fix concurrent mount and expire race with nested submounts.
+- fix colon escape handling.
+- fix recusively referenced bind automounts.
+- update kernel patches.
+
+13/7/2006 autofs-5.0.1 rc1
+--------------------------
+- merge LDAP authentication update for GSSAPI (Jeff Moyer).
+- update default auth config to add options documenetation (Jeff Moyer).
+- workaround segfaults at exit after using GSSAPI library.
+- fix not checking return in init_ldap_connection (Jeff Moyer).
+- correct test for existence of auth config file.
+- correct shutdown log message print.
+- correct auth init test when no credentials required.
+- correct auto.net installed as auto.smb.
+- update LDAP auth - add autodectect option.
+- correct test for libhesiod.
+- correct directory cleanup in mount modules.
+- merge key and wildcard LDAP query for lookups.
+- add cacheing of negative lookups to reduce unneeded map lookups.
+- version number change to allow update from beta for rpm packages.
+
+29/6/2006 autofs-5.0.0_beta6
+----------------------------
+- lookup_init cleanup and fix missed memory leak.
+- use nis map order to check if update is needed.
+- fix couple of memory leaks in lookup_yp.c.
+- fix pasre error in replicated server module.
+- correct spelling error in default config.
+- fix default auth config not being installed.
+- change LDAP query method as my test db was incorrect.
+- change ldap defaults code to handle missing auth config.
+- fix mistake in parsing old style LDAP specs.
+- update LDAP so that new query methos also works for old
+  syntax.
+- allow global macro defines to override system macros.
+- cleanup defaults_read_config.
+- add rfc2307-bis example map configurations.
+- change mode of of config file install to 644.
+- update kernel patches.
+- fix don't unbind on error return from get_query_dn.
+- update RedHat autofs default config.
+
+20/6/2006 autofs-5.0.0_beta5
+---------------------------
+- re-instate v4 directory cleanup.
+- backout master map lookup changes made to beta3.
+- change default master map from /etc/auto.master to auto.master
+  so that we always use nsswitch to locate master map.
+- change default installed master map to include "+auto.master"
+  to pickup NIS master map.
+- correct config names in default.c (jpro@bas.ac.uk).
+- check base of offset mount tree is not a mount before umounting
+  its offsets.
+- fix replicated mount parse for case where last name in list
+  fails lookup.
+- correct indirect mount expire broken by the wildcard lookup fix.
+- fix up multi-mount handling when wildcard map entry present.
+- fix mutex not being unlocked on map read.
+- fix rpc routines not logging errors.
+- fix handling of invalid directory for nobrowse hosts map
+  lookup.
+- add free for working var in get_default_logging.
+- add inialisation for kver in autofs_point struct.
+- fix sources list corruption in check_update_map_sources.
+- fix memory leak in walk_tree.
+- fix memory leak in rpc_portmap_getport and rpc_ping_proto.
+- fix memory leak in initialisation of lookup modules.
+- fix handling of master map entry update.
+- fix program map handling of invalid multi-mount offsets.
+- move autofs4 module loading back to init script.
+- add export access list matching to "hosts" lookup module.
+- add check for key length to long (Jeff Moyer).
+- add patch to restrict /proc lookup to pid directories (Jeff Moyer).
+- fix directory cleanup at exit.
+
+2/6/2006 autofs-5.0.0_beta4
+---------------------------
+- fix memory alloc error in nis lookup module.
+- add "_" to "." mapname translation to nis lookup module.
+- fix white space handling in replicated server selection code.
+- merge don't strip debug info macro patch (Jeff Moyer).
+- merge patch to add sanity checks on rmdir_path and unlink (Jeff Moyer).
+- merge patch fix e2fsck error code check (Jeff Moyer).
+- update hesiod module (Jeff Moyer).
+  - add mutex to protect against overlapping mount requests.
+  - update return from mount request to give more sensible NSS_*
+    values.
+- fix handling of autofs filesystem mount fail on init.
+- add back test test for nested mount in program map lookup.
+  - I must have commented this out for a reason. I guess we'll
+    find out soon enough.
+- fix "-hosts" map not finding entry for the "nobrowse" case.
+- update man page with description of "-hosts" map type.
+- complete logging, including per mount logging.
+  - still needs some more work but that will need to wait.
+- change init script to check for read on config file instead
+  of execute.
+- fix lookup of wildcard map entry for several map types.
+- fix fail to realease cache read lock on indirect map expire.
+- fix incorrect cache update of wildcard map entry.
+- alter master map lookup semantics to be a little more like
+  version 4. The way we should locate the master map needs
+  more investigation and may change again.
+
+23/5/2006 autofs-5.0.0_beta3
+----------------------------
+- add config and compile time info to output of -V.
+- add "-Dvar=value" comand line option to define global
+  macro definitions.
+- remove "nofg" and "bg" options as they aren't relevant for
+  autofs.
+- fix handling of numeric ip address strings in name translation.
+- fix error handling for gethostbyname_r.
+- change option processing to be inline with standard automount
+  option processing. ie. mount entry options override global
+  mount options.
+- replicated server selection re-write.
+
+9/5/2006 autofs-5.0.0_beta2
+---------------------------
+- re-organize functions for direct mount and expire to eliminate
+  pthread compile error.
+- reap return code from child at startup.
+- add check for self inclusion when including maps.
+- add plus map inclusion depth limit.
+- fix logic to check if map update is needed.
+- fix shutdown wait for submounts again (and again ...).
+- add check for filesystem autofs in /proc/filesystems in case
+  it's complied in the kernel.
+- update Gentoo ebuild.
+- updated man pages based on feedback from Jeff Moyer.
+
+1/5/2006 autofs-5.0.0_beta1
+---------------------------
+- Initial update.
+  - direct mounts.
+  - lazy multi-mounts.
+  - added kernel module to source tree.
+- merged depricated LDAP patch.
+- merged configurable locking patch.
+- implemented nsswitch lookup for client maps.
+- sync kernel module source.
+- more kernel module fixes.
+- redo mapenty cache locking and start work on
+  background map refresh.
+- fix hosts map (broken by mapentry cache locking update).
+- fix expire of multi-mount with no root mount.
+- final v5 comms packet definition (famous last words).
+- remove goto from loop.
+- add missing definition of _GNU_SOURCE for strerror_r.
+- fix error handling fix for SIGCHLD handler.
+- read map in sub-thread progresses.
+- add cancelation cleanup routine to expire.
+- correct error handling in lookup_ghost.
+- remove redundant pthread mutex definition from mapent_cache.
+- merged signal_children cleanup patch.
+- first cut '+' included maps for client maps.
+- move directory management of cache prune out of cache code.
+- fix cache enumeration.
+- fix cache update of multi-mount entries on umount.
+- fix fail to close ioctl on direct mount fail.
+- add hesiod to nss source list.
+- allow for maps that don't support enumeration.
+- add '+' included maps in key lookup (missed this).
+- fix update detection following addition of '+' key lookup.
+- convert mapent cache to live within autofs_point struct.
+- convert submounts to use a thread instead of a process.
+- fix rootless multi-mount as target of direct mount.
+- fix sub-mount brakage following above.
+- fix sub-mount as target of direct mount.
+- update mounts.c to use re-entrant getmntent.
+- make substution table re-entrant.
+  - divide into global and local symbol tables.
+- implement per thread storage for extended macro vars
+  (ie. UID, GID, USER, GROUP etc.).
+- fix expandsunent not returning fail on failed macro translation.
+- fix expandsunent return no checked.
+- add EXPERIMENTAL forced shutdown.
+- fixed race in expire.
+- fixed race in alarm module.
+- updated readmap to be autofs_point specific.
+- integrated master map parsing into daemon.
+  - fixed several brakages from above.
+  - implemented state task manager to improve concurrency.
+  - fixed thread creation problem with expire and read map.
+  - worked on master map update (not quite right yet).
+- fix (dev, ino) cache lookup.
+- convert spawn locking to use mutex instead of file.
+  - seems to fix hang during mounting ~1000 direct mounts.
+- fix expire and readmap thread create.
+- fix read multiple sources for mount point.
+- fix hanging state machine (again).
+- add delay at startup till mount complete.
+- initial merge of Jeffs SASL auth code.
+  - entirely untest as yet.
+- re-work LDAP to use configurable defaults.
+- updated configure to check for libxml2 - required by SASL code.
+- updated configure to provide optional inclusion of SASL auth.
+- add check for automount already running.
+- attempt to fix excessive CPU usage (not quite there yet).
+- make samples install try harder to make backup of existing files.
+- SASL auth code functional and added START_TLS code.
+  - START_TLS doesn't seem to work yet, no idea why.
+- fix mount tree find mounts subroutine.
+- get START_TLS code working.
+- cleanup map parsing and nsswitch lookup in lookup.c.
+- first pass documentation update.
+- strugle with FSM problems again.
+- add recovery of existing automounts at startup.
+- add configure option to enable exit leaving busy mounts mounted.
+- sort out code for multiple maps per mount point.
+- fix side effects on multi-mounts and submounts from above.
+- test and fix basic map reread functions.
+- remove need to read entire map when browsing is disabled.
+- fix lookup context not being released.
+- test and fix map re-read for master map entries with multiple entries.
+- fix "[no]browse" not recognised in master map.
+- fix auto.net not failing on sort command.
+- fix expire of rootless mounts such as auto.net multi-mounts (again).
+
+11/4/2005 autofs-4.1.4
+----------------------
+- add /proc/modules check to Debian init script.
+- fix typo in Gentoo init script reload function.
+- fix default map type selection for submounts.
+  - a side affect of this patch is that when the first mount
+    point of a multi-mount entry is '/' it is no longer
+    mandatory. This matches the Solaris automount parsing.
+- implement a timeout for LDAP communication (Dan Cox).
+- change setpgrp to setsid to disascociate from tty properly.
+- fix auto.net and auto.smb to not use non-bourne shell regex
+   when searching for their export list programs.
+- fix nsswitch.conf sources detection.
+- fix grep failing causing assignments to terminate init script.
+- fix handling of localoptions options init script variable.
+- sanitize records from auto.master file (Debian bug#298649).
+- alter logic of UNDERSCORETODOT to work when it's not set (Debian bug#301358).
+- attempt to fix Debian upgrade fail bug#300703.
+  - changes from Herbert Xus' patch.
+  - he`s not sure he got all cases and I can't see more either, so we'll see.
+- revert some broken changes in Gentoo init script.
+- fix end of string handling at end of parsing options string.
+- more work on replicated server code - fix occasional mount fail.
+- revert some Debian init script changes in favour of Debian maintainer patches.
+  - and fix the fix.
+- update kernel patches.
+- remove isprint calls as it breaks 8-bit characters.
+
+14/2/2005 autofs-4.1.4_beta2
+----------------------------
+- add update to -D variable propogation patch (Michael Blanddford).
+- fix rentrancy problem when releasing the cache.
+- fix 'automount: ' error in patern match in init script.
+- applied autofs4 module check changes in Debian init script.
+- fix handling of missing newline on last file map entry.
+- fix map entry lookup order (second try).
+- fix couple of comiler warnings.
+- fix reload init script option for Gentoo and Debian (nearly).
+
+26/1/2005 autofs-4.1.4_beta1
+---------------------------
+- fix error in define of mtab lock file.
+- fix mischief caused by change in default strict -> nonstrict.
+- fix replicated server detection (TCP/UDP/NFSv2/NFSv3) logic (Jeff Moyer and Ian Kent).
+- fix error when setting pwd.
+- fix socket leak (Jeff Moyer and Ian Kent).
+- fix potential race in signal handling code (Jeff Moyer).
+- miscelaneous corrections to doco and typos (Peter Breitenlohner).
+- fix i18n init script underline output (Jeff Moyer).
+- fix logic error in replicated server selection (Jeremy Rosengren and Ian Kent).
+- the map change detection patch
+    - note this requires a kernel patch to work, see README.patches.
+- correct whitespace handling in maps.
+- mount table handling cleanup.
+- fix multi map lookup broken after the map update patch.
+- fix auto master map concatenation bug (Jeff Moyer).
+- merge some Debian patches (Arthur Korn)
+    - 032 remove trailing slash in mount_afs.c.
+    - 033 support hesiod priorities in lookup_hesiod.c.
+    - 034 handle empty options in changer ,ext2 and generic modules.
+    - 035 program mount repeated last character of map output.
+    - 036 make make fail on failure.
+- fix memory leak in cache_clean function (Jeff Moyer).
+- remove restriction of mounting ncpfs filesystems (Mike Fleetwood).
+    - see README.ncpfs.
+- second signal race fix (almost what Chris Feist recommended).
+- fix the ordering of +ypmapname entries in master map (Chris Feist).
+- fix backslash parse for smb mount option username\password (George Hansper).
+- keep udp rpc ping routine from using up reserved ports (Jeff Moyer).
+- maintain backwards compatibility w/ local file maps (Chris Feist).
+- init script fix (Arthur Korn).
+- fix duplicate map handling in init script (Chris Feist).
+- force local map paths to begin with / (Chris Feist).
+- allow for LDAP maps that have greater than the LDAP result count limit (Chris Feist).
+- allow for program maps returning larger than 4kb (Jeff Moyer and Chris Feist?).
+- fix some potential buffer overflows, applied with amendments (Steve Grubb).
+- carry -D variable definitions to submounts (Michael Blandford).
+- merge Debian patch 044 update reference to mailing list (Arthur Korn).
+- provide ability to convert read-only NFS mounts to read-only bind mounts (Thorild Selen).
+- fix incorrect direct map entry lookup in yp module. 
+- merge most of RedHat init patch and the browse and umount loopback patches (Jeff Moyer).
+- fix file handle being left open in lookup_file.c.
+- update 2.4 kernel module patches.
+- add 2.6 kernel module patches.
+- merge fix for program maps returning larger than 4kb (Jeff Moyer).
+- fix trailing white space not removed from map entries not containing a colon.
+- merge remaining bits of Debian and Redhat init script patches.
+- fix duplicate map entry order - return first read instead of last.
+- bump version to 4.1.4 beta1 and start testing.
+- fix spec file to build the beta.
+- fix compile warning in lookup_yp.c.
+- more work on Debian part of init script (wip).
+- add Gentoo portage ebuild files.
+- review remaining Debian patches
+   - all 000 and 001 patches are included in 4.1.4.
+   - 002 log cause of ldap errors applied
+   - 030 document +map in auto master applied.
+   - 031 document -D in automount 8 applied in another diff.
+   - 040 init script policy conformance and backwards compatibility
+         merged but slightly broken (see above).
+   - 041 needs review against new version.
+   - 045 module loading set e applied with minor change.
+   - 046 needs review against new version.
+   - 047 277320 correct automount nsswitch regex applied.
+   - 049 parse_sun to be merged in another diff.
+   - 050 disable_direct_maps.diff applied.
+- update spec file to use autofs sysconfig.
+- update auto.net to search for showmount and use lang variable.
+- allow for ":" escape in multi mount parse (Elmar Pruesse).
+- add auto.smb example program map (Elmar Pruesse).
+- apply slashify-colons patch to enable it work (Timo Felbinger).
+- fix for ldap_search when multiple cn's are in one LDAP entry (Chris Feist).
+- fix alarm not being reset during prune signal event.
+- reimplement locking.
+- implement signaling of submount processes from within daemon.
+   - Fix errors in mount entry handling module.
+   - Update lock module to suit.
+- merge multi map over mount patch.
+- add init script variable to allow adjustment of time to wait for shutdown.
+- fix no directory list when map entry deleted and wild card matches.
+- prevent pre-existing automount point directory from being removed at termination (Chirs Feist).
+- update replicated server doco
+   - autofs will always choose localhost regardless of weights (Chirs Feist).
+
+19/05/2004 autofs-4.1.3
+-----------------------
+- fixed bug processing --verbose option in init scripts.
+- added missing parameter in call to run fsck on ext2 module (Jeff Moyer).
+- added check for executable existance in getldapmounts in init script.
+- updated comment about option handling in getmounts in init script.
+- updated kernel module patches.
+- fix to init script for reload option (Michael Blandford).
+- autofs now requires autoconf later than 2.5.
+- replicated server fixup.
+- fix segv in NIS lookup module (Jeff Moyer).
+- init script fix for Debian (Thorild Selen).
+- fix pie option not checking for runable executable.
+- add NFS V3 and TCP to rpc discovery.
+- make nonstrict the default for multi-mount map entries.
+
+07/04/2004 autofs-4.1.2
+-----------------------
+- merge patches from Jeff Moyer.
+   - Change (back) compile option -fpic -> -fPIC.
+   - add code to recognise old LDAP master map format.
+   - document limitation of direct mounts obscuring mount
+     points in README.direct.
+   - fix error in detecting duplicate master map entries
+     in init script.
+   - add check for automount base already mounted.
+   - check for pie support and enable compile option if
+     available.
+   - corrections to init script including send HUP signal
+     on reload.
+- fix unchecked return from get_best_mount.
+- add example file master map using LDAP.
+- 1st attempt to deal with smb mounts that go away while
+  mounted.
+- updated kernel patches.
+
+14/03/2004 autofs-4.1.1
+-----------------------
+- added CHANGELOG.
+- fixed error in some ident tags.
+- merge debian patch 032 document nonstrict special option.
+- updated spec file to standardise paths etc.
+- reintroduced some 4.0.0 init script code to help serialise
+  shutdown signaling and umount of submounts. This should
+  alieviate some of the contention for umount at shutdown.
+- fix invalid path reference on error exit.
+- merged debian patches.
+   - 030 man page corrections in autofs(5) and automount(8).
+   - 033 correct url in man page automount(8).
+   - 034 correct mount call in mount_changer.c.
+   - 040 document gid option in man page autofs(5).
+- change fsck return code check.
+   - still try to mount if fsck fails to run.
+   - error only if fsck finds uncorrectable errors.
+- fixed lookup problem with wildcard order in map.
+- fixed lookup problem relating to directory tidyup.
+- merge Jim Carters' buffer management and expire limit patch.
+- remove make requirement for hesoid and ldap presence.
+- add check for submount point itself busy.
+   - requires autofs4 4.04 kernel module.
+- added --verbode and --debug options to quieten daemon and
+  provide ability to get debug output when needed. Default
+  is produce no output except error messages.
+- merge Mike Blandfords' replicated server patches.
+- added ability to access external environment var.
+   - set by default, use --disable-ext-env to turn of.
+
+4/12/2003 autofs-4.1.0
+----------------------
+
+- Fixed problem with regex in init script not recognising -g option.
+- removed patch to ignore failed mounts in tree mounts in favour
+  of using nonstrict option.
+- updated autofs4 kernel module patches.
+
+
+10/11/2003 autofs-4.1.0-beta3
+-----------------------------
+
+- I'm aware of one outstanding problem with multi-mount maps. The
+  senario is that the daemon cannot remount a manualy umounted multi-mount
+  entry until after the following expire event. This is due kernel module
+  and daemon not knowing the umount has occured and consequently not
+  cleaning up afterward. This causes the kernel module to return a longer
+  path than it should which cannot be matched in the map. I hope to be able
+  to fix this a some time in the future.
+- removed debug print to catch reported mount problem.
+- added patch to ignore failed mounts in tree mounts.
+
+
+14/10/2003 autofs-4.1.0-beta2
+-----------------------------
+
+- added debug print to catch reported mount problem.
+- updated autofs4 patches and their documention.
+- added autofs4 patch for 2.4.22.
+
+
+29/9/2003 autofs-4.1.0-beta1
+----------------------------
+
+This is a restructuring and improvement of my original v4 patch which added
+direct mount support for file and NIS maps.
+                                                                                
+As well the considerable restructure and tidy up of my original patch it
+includes:
+                                                                                
+- Merge of all the RedHat autofs v3 patches. This includes the RedHat
+  init script and LDAP improvements. See the README files in the package
+  for more info.
+- Add LDAP direct mount support to complement the file and NIS map direct
+  mount support already present.
+- Merged some patches from the Debian and SuSE autofs v4 packages.
+- Found a bunch of bugs and fixed them. This was largely due to the huge
+  efforts made by Aaron Ogden in testing a never ending stream of attempted
+  corrections. Thanks Aaron.
+
+
+29/09/2003 autofs-4.0.0-1
+-------------------------
+
+Largely the autofs-4.0.0pre10 with:
+- Some patches that I did ages ago to improve submounts. This includes
+  correcting the double slash in mount points. Changes to the init script
+  to improve the shutdown when submounts are involved.
+- Merged some small patches from the Debian and SuSE autofs v4 packages.
+- A simple work around to allow tree mounts to work with RedHat 2.4.20,
+  and above, kernels in the autofs4 module patch.
+                                                                                
+

@@ -1,0 +1,181 @@
+
+Requirements
+============
+
+- autofs 5.0.0 requires protocol version 5.00 of the autofs4 kernel
+  module (see "Applying the kernel patch" below).
+
+- The LDAP, SASL, and the libxml2 libraries may also be required if
+  the LDAP configure options are selected (see "Configure options for
+  autofs" below).
+
+How to build and install
+========================
+
+To configure, compile, and install the package directly from the
+tar distribution, follow these steps.
+
+  1. Make sure you have the latest version of the package available
+     from http://www.kernel.org/pub/linux/daemons/autofs/v4.
+
+  2. Type `./configure' to configure the package. You may want to add
+     selected configure options. See "Configure options for autofs"
+     below.
+
+  3. Build the package by typing `make'
+
+  4. Install the package by typing `make install'.
+
+To build an `rpm' from the tar distribution use:
+
+rpmbuild -tb autofs-5.0.0_beta6.tar.gz
+
+and install the resulting rpm package.
+
+Configure options for autofs
+============================
+
+There are several configure options available to add functionality.
+
+--prefix=<root_prefix>
+   autofs usually installs in /usr, with the daemon in /usr/sbin,
+   the man pages in /usr/man, and the modules in /usr/lib/autofs.
+   If you wish to install to a different location use this option.
+
+--with-path=PATH
+   Allows the specification of the path to search for utility
+   binaries used by autofs during the `configure' process. If
+   any of your binaries such as `mount', `mount.cifs' etc. live
+   in locations other than /usr/bin:/bin:/usr/sbin:/sbin you
+   will need to use this option.
+   
+--disable-ext-env
+   This option disables the ability to the external environment
+   to set an external environment variable for substitution.
+
+--disable-mount-locking
+   This option disables mount locking which is to prevent corruption
+   in /etc/mtab due to multiple concurrent autofs mount commands.
+
+--enable-force-shutdown
+   This option enables the use of the USR1 signal to force an
+   unconditional unlink umount of all mounts at shutdown.
+
+--enable-ignore-busy
+   This option enables the automount to exit ignoring any busy
+   mounts upon receiving a TERM signal. automount attempts to
+   recover upon startup.
+
+--with-confdir=DIR
+  This option allows the specification of the directory that contains
+  the autofs configuration file `autofs'. If not given the directories
+  `/etc/sysconfig', `/etc/default' and `/etc/conf.d' and checked for
+  existence and the first one found is used.
+
+--with-mapdir=PATH
+  This option allows the specification of the directory that contains
+  autofs mount maps. The directories `/etc/autofs' and `/etc' are
+  checked for existence and first one found is used.
+
+--with-hesiod=DIR
+  Use this option to enable Hesiod support if your Hesiod library
+  isn't installed in /usr/lib with the include files in /usr/include.
+
+--with-openldap=DIR
+  Use this To enable LDAP support if your OpenLDAP library isn't
+  installed in /usr/lib with the include files in /usr/include.
+
+--with-sasl=DIR
+  Use this to enable TLS encrypted connections and LDAP
+  authentication using the SASL library. DIR only needs to be
+  given if your LDAP and SASL library and include files are
+  installed in other than /usr/lib and /usr/include. See
+  auto.master(5) for more information about LDAP configuration.
+
+Applying The Kernel Patch
+=========================
+
+Patches that can be applied to the kernel are located in the
+`patches' directory. If you have installed autofs from an rpm
+then they can be found in the packages' doc directory after
+install. They consist of a kernel patch for each kernel from
+2.6.9 thru 2.6.16 (the patches are in the 2.6.17-rc series so
+patching a 2.6.17 or above kernel shouldn't be needed). If
+you need a patch for an older 2.6 kernel then post to the
+autofs mailing list and ask for one to be done.
+
+To apply one of these patches:
+
+1) change to the root of your kernel source tree.
+2) patch the kernel
+3) make the kernel
+4) Install the kernel as normal.
+
+If you use a packaged kernel then you need to check to see if
+the v5 update patch will apply and if it does apply add the
+update patch and build your packaged kernel.
+
+For example, Fedora Core 4 kernel package 2.6.11-1.369_FC4
+would use the 2.6.12 patch because it applies the 2.6.12 release
+candidate revision 6 patch. But the autofs patch doesn't apply
+because the rpm also applies a patch somewhere that changes one
+area the the patch also changes but this change is not present
+in the 2.6.12 release kernel.
+
+On the other hand, Fedora Core 3 kernel 2.6.12-1.1381_FC3
+uses the 2.6.12 patch and it applies cleanly because the kernel
+doesn't apply a 2.6.13 release candidate patch and there are no
+additional patches that clash with the autofs update patch. To
+build this kernel with an update patch modify the kernel-2.6.spec
+to apply the update patch after all other patches (see example
+change below), copy the autofs4-2.6.12-v5-update to the SOURCES
+directory of your RPM build tree and us use
+`rpmbuild -bb --target=i686 kernel-2.6.spec' in the SPEC directory
+of the build tree and install the resulting RPMs.
+
+Example of how to add the update patch:
+
+--- kernel-2.6.spec.orig	2006-05-01 10:14:27.000000000 +0800
++++ kernel-2.6.spec	2006-05-01 10:16:21.000000000 +0800
+@@ -358,6 +358,8 @@
+ Patch10000: linux-2.6.0-compile.patch
+ Patch10001: linux-2.6-compile-fixes.patch
+ 
++Patch20000: autofs4-2.6.12-v5-update.patch
++
+ # END OF PATCH DEFINITIONS
+ 
+ BuildRoot: %{_tmppath}/kernel-%{KVERREL}-root
+@@ -739,6 +741,7 @@
+ %patch10000 -p1
+ %patch10001 -p1
+ 
++%patch20000 -p1
+ 
+ # END OF PATCH APPLICATIONS
+ 
+Some Fedora Core kernels have autofs4 bug fix patches, such as
+2.6.16-1.2096_FC5. The update patch supersedes all previous patches
+so any additional autofs4 patches should be removed and the update
+patch added. For example 2.6.16-1.2096_FC5 needs this change:
+
+--- kernel-2.6.spec.orig	2006-06-18 14:56:27.000000000 +0800
++++ kernel-2.6.spec	2006-06-18 14:56:52.000000000 +0800
+@@ -359,7 +359,7 @@
+ Patch1630: linux-2.6-radeon-backlight.patch
+ Patch1640: linux-2.6-ide-tune-locking.patch
+ Patch1641: linux-2.6-ide-cd-shutup.patch
+-Patch1650: linux-2.6-autofs-pathlookup.patch
++#Patch1650: linux-2.6-autofs-pathlookup.patch
+ Patch1660: linux-2.6-valid-ether-addr.patch
+ Patch1670: linux-2.6-softcursor-persistent-alloc.patch
+ Patch1680: linux-2.6-pwc-powerup-by-default.patch
+@@ -983,7 +983,7 @@
+ # Silence noisy CD drive spew
+ %patch1641 -p1
+ # autofs4 looks up wrong path element when ghosting is enabled
+-%patch1650 -p1
++#%patch1650 -p1
+ # 
+ %patch1660 -p1
+ # Use persistent allocation in softcursor

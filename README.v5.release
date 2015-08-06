@@ -1,0 +1,78 @@
+
+autofs-5.0.0
+============
+
+Differences between version 4 and version 5.
+
+- Master map is now read and parsed by the `automount' daemon
+  - the parameters for the `automount' daemon are now very different.
+    See automount(8).
+
+- The master map default is "auto.master" and nsswitch is used to
+  locate it. The line "+auto.master" has been added to the default
+  installed "/etc/auto.master" to ensure that those using NIS will
+  still find their master map. This is in line with other industry
+  automount implementations. The name of the default master map can
+  be overridden by setting the MASTER_MAP_NAME configuration variable.
+
+- The `automount' daemon is now a multi-threaded application and so
+  appears as a single process (unless a thread process display option
+  is used).
+
+- `autofs' filesystem mounts only appear in /proc/mounts and not
+  /etc/mtab. If you have a large number of entries in a direct mount
+  map and link /etc/mtab to /proc/mounts you may see performance
+  degradation.
+
+- `autofs' version 5.0.0 will refuse to run if it cannot find an
+   autofs4 kernel module that supports protocol version 5.00 or above.
+
+- mount options present in the master map are accumulated by default
+  which is different to the behavior of some other autofs
+  implementations. A configuration option is available to change this
+  behavior if required.
+
+New in 5.0.0 is:
+
+- improved direct mount map support
+  - single level map entries now work as expected.
+  - top level directory of direct mount hierarchy no longer obscures
+    directory tree below.
+
+- `+' map inclusion
+  - maps preceded by a `+' in file maps may now be included inline.
+  - implemented for the master map and mount maps.
+
+- added nsswitch map source support
+  - is now used to locate maps if no map source is given in their
+    specification.
+  - is used for both master map and mount maps.
+
+- rewrote multi-mount map code
+  - multi-mount map entry offsets now mount and expire independently
+    instead of having to mount and umount all offset entries at once.
+
+- added LDAP encryption and authentication support
+  - needs to be enabled using a configure option.
+  - a configuration file specifies whether encryption and authentication
+    is to be used (see INSTALL and auto.master(5) for more information).
+
+- improved shutdown and restart
+  - needs to be enabled using a configure option.
+  - see INSTALL for more information.
+
+- a "hosts" map module has been added
+  - an entry like "/net -hosts" is now understood and uses the new
+    multi-mount semantics for lazy mount/umount of exports from the host.
+  - the implementation is quite simple minded at this stage and will need
+    refinement. It just iterates through the host table and adds any host
+    names it finds to the internal map.
+
+Things not yet done
+===================
+
+- I have no way to test the Gentoo setup here anymore so it is unlikely
+  to work. Patches from anyone who needs this are welcome.
+
+Ian
+

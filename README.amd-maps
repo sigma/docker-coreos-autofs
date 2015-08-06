@@ -1,0 +1,126 @@
+
+amd map parser
+==============
+
+The ability to parse amd format maps has been added to autofs.
+
+How to use amd maps in autofs
+-----------------------------
+
+To add amd map parsing to autofs new "format" module has been added.
+To use this new map format module the existing master map syntax is
+used as described below.
+
+The master map entry syntax is:
+
+mount-point [map-type[,format]:]map [options]
+
+For amd format maps this becomes:
+
+/amd/mp   file,amd:amd.mp
+
+which will use file as the map source and the amd format parser for
+the map. But see the section below on configuration below for how to
+eliminate the need to specify "map-type,format" in the master map.
+
+Configuration sub-system changes
+--------------------------------
+
+The configuration sub-system has changed to accommodate the amd parser.
+See autofs.conf(5) for more information on format changes.
+
+The configuration is now split into system initialization only
+configuration and the daemon configuration. Previously everything was
+located in the system initialization configuration file, but now the
+configuration is located in autofs.conf in the directory the distribution
+uses for the autofs configuration.
+
+There is information about what amd configuration entries can be used
+in comments of the installed configuration so that's worth a look.
+
+All that's needed to add an existing amd configuration to autofs is to
+add it below the autofs configuration. Apart from changing the amd
+"[ global ]" section name to "[ amd ]" nothing else should need to be
+changed. However, quite a few amd configuration options don't have
+meaning within autofs. When these options are seen it should be logged.
+
+Be aware that, if the an old configuration exists and the configuration
+hasn't been updated after the installation, changes to the the old
+configuration will override changes to the new configuration because
+backward compatibility takes priority over the new implementation.
+
+The amd per-map sections have two functions, to allow per-mount
+configuration, as it does in amd, and to allow master map entries to
+avoid the need to specify the "type,format" part of the master map
+entry so they can use the nsswitch map source functionality in the
+same way autofs master map entries do.
+
+If a section for an amd mount is added below the global amd section
+using the mount point path (as is done in amd.conf) then autofs will
+know the map format is amd (it doesn't matter if there are no other
+configuration options in the mount point section). Since the map must
+be given in the master map entry the map_name option is not mandatory
+as it is in amd and will no be used.
+
+If a mount point is present in the master map and the source of the
+map is nis then it should be sufficient to use (for example):
+
+/amd/mp           amd.mp
+
+in the master map and
+
+automount: nis
+
+in /etc/nsswitch.conf or
+
+[ amd ]
+map_type = nis
+
+in the configuration along with
+
+[ /amd/mp ]
+
+or
+
+[ /amd/mp ]
+map_type = nis
+
+
+amd map options that can be used
+--------------------------------
+
+In an attempt to describe the usable amd map options, many of the amd
+map options have been added to autofs(5).
+
+Not all the amd functionality has been implemented. The autofs(5) man
+page usually mentions if something hasn't been implemented so that's
+worth checking.
+
+What hasn't been implemented
+----------------------------
+
+The configuration options fully_qualified_hosts, unmount_on_exit and
+browsable_dirs (and a couple of others) aren't implemented.
+
+Map types (sources) ndbm, passwd are not implemented.
+The map source "sss" can't be used for amd format maps.
+
+Map caching options aren't used, the existing autofs map caching is
+always used for available map sources.
+
+The regex map key matching feature is not implemented.
+
+Mount types lustre, nfsx, jfs, program and direct haven't been
+implemented and other mount types that aren't implemented in amd are
+also not available.
+
+How to find out more
+--------------------
+
+Have a look at the man pages autofs.conf(5), autofs(5) and to a
+lesser extent auto.master(5). These may help.
+
+But the best way to get more information is to ask on the
+autofs mailing list as described in the README file.
+
+Ian

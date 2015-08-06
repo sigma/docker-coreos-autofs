@@ -1,0 +1,435 @@
+.\" t
+.TH AUTOFS.CONF "23 Jan 2014"
+.SH NAME
+autofs.conf \- autofs configuration
+.SH "DESCRIPTION"
+.P
+Configuration settings used by
+.BR automount (8)
+may be changed in the configuration file \fB@@autofsmapdir@@/autofs.conf\fP.
+.P
+This file contains two primary sections, \fBautofs\fP and \fBamd\fP.
+.P
+Configuration entries may be present at the beginning of the
+configuration file without a section header and are implicitly
+included as part of the \fBautofs\fP section.
+.P
+Each section name is enclosed in square brackets with
+spaces between the brackets and the section name. The \fBamd\fP
+section may be followed by further sections, named by the
+top level mount point path, that contain per mount
+configuration settings.
+.SH "SECTION autofs CONFIGURATION OPTIONS"
+.P
+Configuration settings available are:
+.TP
+.B timeout
+.br
+Sets the default mount timeout in seconds. The internal program
+default is 10 minutes, but the default installed configuration
+overrides this and sets the timeout to 5 minutes to be consistent
+with earlier autofs releases.
+.TP
+.B negative_timeout
+.br
+Set the default timeout for caching failed key lookups (program default
+60). If the equivalent command line option is given it will override this
+setting.
+.TP
+.B mount_wait
+.br
+Set the default time to wait for a response from a spawned mount(8)
+before sending it a SIGTERM. Note that we still need to wait for the
+RPC layer to timeout before the sub-process exits so this isn't ideal
+but it is the best we can do. The default is to wait until mount(8)
+returns without intervention.
+.TP
+.B umount_wait
+.br
+Set the default time to wait for a response from a spawned umount(8)
+before sending it a SIGTERM. Note that we still need to wait for the
+RPC layer to timeout before the sub-process exits so this isn't ideal
+but it is the best we can do.
+.TP
+.B browse_mode
+.br
+Maps are browsable by default (program default "yes").
+.TP
+.B mount_nfs_default_protocol
+.br
+Specify the default protocol used by
+.BR mount.nfs (8)
+(program default 3). Since we can't identify this default automatically
+we need to set it in the autofs configuration.
+.TP
+.B append_options
+.br
+Determine whether global options, given on the command line or per mount
+in the master map, are appended to map entry options or if the map entry
+options replace the global options (program default "yes", append options).
+.TP
+.B logging
+.br
+set default log level "none", "verbose" or "debug" (program default "none").
+.TP
+.B force_standard_program_map_env
+.br
+override the use of a prefix with standard environment variables when a
+program map is executed. Since program maps are run as the privileded
+user setting these standard environment variables opens automount(8) to
+potential user privilege escalation when the program map is written in a
+language that can load components from, for example, a user home directory
+(program default "no").
+.SS LDAP Configuration
+.P
+Configuration settings available are:
+.TP
+.B ldap_timeout
+.br
+Set the network response timeout (default 8).
+Set timeout value for the synchronous API  calls. The default is the LDAP
+library default of an infinite timeout.
+.TP
+.B ldap_network_timeout
+.br
+Set the network response timeout (default 8).
+.TP
+.B ldap_uri
+.br
+A space separated list of server uris of the form <proto>://<server>[/]
+where <proto> can be ldap or ldaps. The option can be given multiple times.
+Map entries that include a server name override this option and it is then
+not used. Default is an empty list in which case either the server given
+in a map entry or the LDAP configured default is used. This uri list is read at
+startup and whenever the daemon receives a HUP signal.
+
+This configuration option can also be used to request autofs lookup SRV RRs
+for a domain of the form <proto>:///[<domain dn>]. Note that a trailing
+"/" is not allowed when using this form. If the domain dn is not specified
+the dns domain name (if any) is used to construct the domain dn for the
+SRV RR lookup. The server list returned from an SRV RR lookup is refreshed
+according to the minimum ttl found in the SRV RR records or after one hour,
+whichever is less.
+.TP
+.B search_base
+.br
+The base dn to use when searching for amap base dn. This entry may be
+given multiple times and each will be checked for a map base dn in
+the order they occur in the configuration. The search base list is read
+at startup and whenever the daemon recieves a HUP signal.
+.TP
+.B map_object_class
+.br
+The map object class. In the \fBnisMap\fP schema this corresponds to the class
+\fBnisMap\fP and in the \fBautomountMap\fP schema it corresponds to the class
+\fBautomountMap\fP.
+.TP
+.B entry_object_class
+.br
+The map entry object class. In the \fBnisMap\fP schema this corresponds
+to the class \fBnisObject\fP and in the \fBautomountMap\fP schema it
+corresponds to the class \fBautomount\fP.
+.TP
+.B map_attribute
+.br
+The attribute used to identify the name of the map to which this
+entry belongs.  In the \fBnisMap\fP schema this corresponds to the attribute
+\fBnisMapName\fP and in the \fBautomountMap\fP schema it corresponds to the
+attribute \fBou\fP or \fBautomountMapName\fP.
+.TP
+.B entry_attribute
+.br
+The attribute used to identify a map key. In the \fBnisMap\fP schema this
+corresponds to the attribute \fBcn\fP and in the \fBautomountMap\fP schema
+it corresponds to the attribute \fBautomountKey\fP.
+.TP
+.B value_attribute
+.br
+The attribute used to identify the value of the map entry. In the \fBnisMap\fP
+schema this corresponds to the attribute \fBnisMapEntry\fP and in the \fBautomountMap\fP
+schema it corresponds to the attribute
+.BR automountInformation .
+.TP
+.B NOTE:
+It is essential that entries use class and attribute in a consistent
+manner for correct operation of autofs. For example mixing \fBcn\fP
+and \fBautomountKey\fP attributes in \fBautomount\fP schema will
+not work as expected.
+.TP
+.B auth_conf_file
+This configuration option may be used to specify an alternate location
+for the ldap authentication configuration file. See
+.BR autofs_ldap_auth.conf (5)
+for more information.
+.SH "SECTION amd CONFIGURATION OPTIONS"
+.P
+A number of the amd configuration options are not used by autofs,
+some because they are not relevant within autofs, some because
+they are done differently in autofs and others that are not yet
+implemented.
+
+Since \fBmount_type\fP is always autofs (because there's no user space
+NFS server) the configuration entries relating to that aren't used.
+Also, server availability is done differently within autofs so the
+options that relate to the amd server monitoring sub-system are
+also not used.
+
+These options are \fBmount_type\fP, \fBauto_attrcache\fP, \fBportmap_program\fP,
+\fBnfs_vers_ping\fP, \fBnfs_allow_any_interface\fP, \fBnfs_allow_insecure_port\fP,
+\fBnfs_proto\fP, \fBnfs_retransmit_counter\fP, \fBnfs_retransmit_counter_udp\fP,
+\fBnfs_retransmit_counter_tcp\fP, \fBnfs_retransmit_counter_toplvl\fP,
+\fBnfs_retry_interval\fP, \fBnfs_retry_interval_udp\fP, \fBnfs_retry_interval_tcp\fP,
+\fBnfs_retry_interval_toplvl\fP and \fBnfs_vers\fP.
+
+Other options that are not used within the autofs implementation:
+.TP
+.BR log_file ", " truncate_log
+.br autofs used either stderr when running in the foreground or
+sends its output to syslog so an alternate log file (or truncating
+the log) can't be used.
+.TP
+.B print_pid
+.br
+There's no corresponding option for this within autofs.
+.TP
+.BR use_tcpwrappers ", " show_statfs_entries
+.br
+There's no user space NFS server to control access to so this
+option isn't relevant. The show_statfs_entries can't be
+implemented for the same reason.
+.TP
+.B debug_mtab_file
+.br
+There's no user space NFS server and autofs avoids using file
+based mtab whenever possible.
+.TP
+.B sun_map_syntax
+.br
+Sun map format is handled by autofs itself.
+.TP
+.BR plock ", " show_statfs_entries ", " preferred_amq_port
+.br
+Are not supported by autofs.
+.TP
+.BR ldap_cache_maxmem ", " ldap_cache_seconds
+.br
+External ldap caching is not used by autofs.
+.TP
+.B ldap_proto_version
+.br
+autofs always attempts to use the highest available ldap
+protocol version.
+.TP
+.BR cache_duration ", " map_reload_interval ", " map_options
+.br
+The map	entry cache is continually updated and stale entries
+cleaned on re-load, which is done when map changes aredetected
+so these configuration entries are not used by autofs.
+.TP
+.B localhost_address
+This is not used within autofs. This configuration option was
+only used in the amd user space server code and is not relevant
+within autofs.
+.P
+Options that are handled differently within autofs:
+.TP
+.B pid_file
+.br
+To specify a pid file name a command line option must be used on startup.
+.TP
+.B print_version
+.br
+Program version and feature information is obtained by using the
+automount command line option "-V".
+.TP
+.B debug_options ", " log_options
+.br
+autofs has somewhat more limited logging and debug logging options.
+When the log_options options is encountered it is converted to the
+nearest matching autofs logging option. Since the configuration
+option debug_options would be handled the same way it is ignored.
+.TP
+.B restart_mounts
+.br
+This option has no sensible meaning within autofs because autofs
+always tries to re-connect to existing mounts. While this has its
+own set of problems not re-connecting to existing mounts always
+results in a non-functional automount tree if mounts were busy at
+the last shutdown (as is also the case with amd when using
+mount_type autofs).
+.TP
+.B forced_unmounts
+.br
+Detaching mounts often causes serious problems for users of
+existing mounts. It is used by autofs in some cases, either at
+the explicit request of the user (with a command line or init
+option) and in some special cases during program operation but
+is avoided whenever possible.
+.P
+A number of configuration options are not yet implemented:
+.TP
+.B search_path
+.br
+Always a little frustrating, the compiled in map location should
+be used to locate maps but isn't in some cases. This requires
+work within autofs itself and that will (obviously) include
+implementing this configuration option for the amd map parser
+as well.
+.TP
+.B fully_qualified_hosts
+Not yet implemented.
+.TP
+.B unmount_on_exit
+.br
+Since autofs always tries to re-connect to mounts left mounted
+from a previous shutdown this is a sensible option to implement
+and that will be done.
+.TP
+.B browsable_dirs
+.br
+Not yet implemented.
+.TP
+.B exec_map_timeout
+.br
+A timeout is not currently used for for program maps, might be
+implemented.
+.TP
+.B tag
+.br
+The tag option is not implemented within autofs.
+.P
+Supported options:
+.TP
+.BR arch ", " karch ", " os ", " osver
+.br
+These options default to what is returned from uname(2) and can
+be overridden if required.
+.TP
+.B full_os
+This option has no default and must be set in the configuration
+if used in maps.
+.TP
+.B cluster
+.br
+If not set defaults to the host domain name. This option corresponds
+to the HP_UX cluster name (according to the amd source) and is
+probably not used in Linux but is set anyway.
+.TP
+.B vendor
+This option has a default value of "unknown", it must be set in the
+configuration if used in maps.
+.TP
+.B auto_dir
+.br
+Is the base name of the mount tree used for external mounts that
+are sometimes needed by amd maps. Its default value is "/a".
+.TP
+.B map_type
+.br
+Specifies the autofs map source, such as file, nis, ldap etc. and
+has no default value set.
+.TP
+.B map_defaults
+.br
+This option is used to override /defaults entries within maps
+and can be used to provide different defaults on specific machines
+without having to modify centrally managed maps. It is empty by
+default.
+.TP
+.B search_path
+.br
+Colon separated paths to search for maps that are not specified
+as a full path.
+.TP
+.B dismount_interval
+.br
+Is equivalent to the autofs timeout option. It is only possible
+to use this with type "auto" mounts due to the way the autofs
+kernel module performs expiry. It takes its default value from
+the autofs internal defaulti of 600 seconds.
+.TP
+.B autofs_use_lofs
+.br
+If set to "yes" autofs will attempt to use bind mounts for type
+"auto" when possible.
+.TP
+.B nis_domain
+.br
+Allows setting of a domain name other than the system default.
+.TP
+.B local_domain
+.br
+Is used to override (or set) the host domain name.
+.TP
+.B normalize_hostnames
+.br
+If set to "yes" then the contents of ${rhost} is translated in
+its official host name.
+.TP
+.B domain_strip
+.br
+If set to "yes" the domain name part of the host is strippped
+when normalizing hostnames. This can be useful when using of
+the same maps in a multiple domain environment.
+.TP
+.B normalize_slashes
+.br
+This option is set to "yes" by default and will collapse
+multiple unescaped occurrences of "/" to a single "/".
+.TP
+.BR selectors_in_defaults ", " selectors_on_default
+.br
+This option has a default value of "no". If set to "yes" then
+any defaults entry will be checked for selectors to determine
+the values to be used. selectors_in_defaults is the preferred
+option to use.
+.TP
+.B ldap_base
+.br
+iThis option has no default value. It must be set to the base dn
+that is used for queries if ldap is to be used as a map source.
+.TP
+.B ldap_hostports
+.br
+This option has no default value set. It must be set to the URI
+of the LDAP server to be used for lookups wheni ldap is used a
+map source. It may contain a comma or space separated list of
+LDAP URIs.
+.TP
+.B hesiod_base
+.br
+Sets the base name used for hesiod map sources.
+.TP
+.B linux_ufs_mount_type
+.br
+This is an additional configuration option for the autofs amd format
+parser implementation.
+
+There's no simple way to determine what the system default filesystem
+is and am-utils needs to be continually updated to do this and can
+easily get it wrong ayway. So allow it to be set in the configuration.
+.SH EXAMPLE
+.sp
+.RS +.2i
+.ta 1.0i
+.nf
+[ autofs ]
+timeout = 300
+browse_mode = no
+
+[ amd ]
+dismount_interval = 300
+map_type = nis
+autofs_use_lofs = no
+
+[ /expamle/mount ]
+dismount_interval = 60
+map_type = file
+.fi
+.RE
+.SH "SEE ALSO"
+.BR automount (8),
+.BR auto.master (5),
+.BR autofs_ldap_auth.conf (5)
+.SH AUTHOR
+This manual page was written by Ian Kent <raven@themaw.net>.

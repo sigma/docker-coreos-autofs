@@ -1,0 +1,30 @@
+#
+dn: automountMapName=auto_indirect,dc=themaw,dc=net
+objectClass: top
+objectClass: automountMap
+automountMapName: auto_indirect
+
+dn: automountKey=bin,automountMapName=auto_indirect,dc=themaw,dc=net
+objectClass: top
+objectClass: automount
+automountKey: bin
+automountInformation: 	budgie:/usr/local/bin
+
+dn: automountKey=etc,automountMapName=auto_indirect,dc=themaw,dc=net
+objectClass: top
+objectClass: automount
+automountKey: etc
+automountInformation: 	budgie:/usr/local/etc
+
+dn: automountKey=lib,automountMapName=auto_indirect,dc=themaw,dc=net
+objectClass: top
+objectClass: automount
+automountKey: lib
+automountInformation: 	budgie:/usr/local/lib
+
+dn: automountKey=/,automountMapName=auto_indirect,dc=themaw,dc=net
+objectClass: top
+objectClass: automount
+automountKey: /
+automountInformation: 	budgie:/usr/local/&
+

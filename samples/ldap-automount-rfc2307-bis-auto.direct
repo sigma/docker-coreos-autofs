@@ -1,0 +1,46 @@
+#
+dn: automountMapName=auto_direct,dc=themaw,dc=net
+objectClass: top
+objectClass: automountMap
+automountMapName: auto_direct
+
+dn: automountKey=/nfs/budgie/man,automountMapName=auto_direct,dc=themaw,dc=net
+objectClass: automount
+automountKey: /nfs/budgie/man
+automountInformation: 	budgie:/usr/local/man
+
+dn: automountKey=/nfs/budgie/bin,automountMapName=auto_direct,dc=themaw,dc=net
+objectClass: automount
+automountKey: /nfs/budgie/bin
+automountInformation: 	budgie:/local/data/bin
+
+dn: automountKey=/nfs/budgie/etc,automountMapName=auto_direct,dc=themaw,dc=net
+objectClass: automount
+automountKey: /nfs/budgie/etc
+automountInformation: 	budgie:/usr/local/etc
+
+dn: automountKey=/nfs/sbin,automountMapName=auto_direct,dc=themaw,dc=net
+objectClass: automount
+automountKey: /nfs/sbin
+automountInformation:	budgie:/usr/local/sbin
+
+dn: automountKey=/tst/budgie/man,automountMapName=auto_direct,dc=themaw,dc=net
+objectClass: automount
+automountKey: /tst/budgie/man
+automountInformation:	budgie:/usr/local/man
+
+dn: automountKey=/nfs/budgie/sbin,automountMapName=auto_direct,dc=themaw,dc=net
+objectClass: automount
+automountKey: /nfs/budgie/sbin
+automountInformation:	budgie:/usr/local/sbin
+
+dn: automountKey=/nfs/budgie/test,automountMapName=auto_direct,dc=themaw,dc=net
+objectClass: automount
+automountKey: /nfs/budgie/test
+automountInformation:	budgie:/usr/local/test
+
+dn: automountKey=/tst/budgie/etc,automountMapName=auto_direct,dc=themaw,dc=net
+objectClass: automount
+automountKey: /tst/budgie/etc
+automountInformation:	budgie:/usr/local/etc
+

@@ -1,0 +1,47 @@
+Supported forms for mount paths are:
+
+Normal single-host (these are unchanged)
+<path> host:/path/path
+
+Single host entries are not probed for a server response.
+
+Multiple replicated hosts, same path:
+<path> host1,host2,hostn:/path/path
+
+Multiple hosts, some with same path, some with another
+<path> host1,host2:/blah host3:/some/other/path
+
+Multiple replicated hosts, different (potentially) paths:
+<path> host1:/path/pathA host2:/path/pathB
+
+Mutliple weighted, replicated hosts same path:
+<path> host1(5),host2(6),host3(1):/path/path
+
+Multiple weighted, replicated hosts different (potentially) 
+paths:
+<path> host1(3):/path/pathA host2(5):/path/pathB
+
+For these formats a priority ordered list of hosts is created by using
+the following selection rules.
+
+1) Highest priority in selection is proximity.
+   Proximity, in order of precedence is:
+     - PROXIMITY_LOCAL, host corresponds to a local interface.
+     - PROXIMITY_SUBNET, host is located in a subnet reachable
+       through a local interface.
+     - PROXIMITY_NETWORK, host is located in a network reachable
+       through a local interface.
+     - PROXIMITY_OTHER, host is on a network not directlty
+       reachable through a local interface.
+  
+2) NFS version and protocol is selected by caclculating the largest
+   number of hosts supporting an NFS version and protocol that
+   have the closest proximity. These hosts are added to the list
+   in response time order. Hosts may have a corresponding weight
+   which essentially increases response time and so influences the
+   host order.
+  
+3) Hosts at further proximity that support the selected NFS version
+   and protocol are also added to the list in response time order as
+   in 2 above.
+

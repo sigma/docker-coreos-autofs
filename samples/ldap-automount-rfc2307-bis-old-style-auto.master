@@ -1,0 +1,19 @@
+dn: automountMapName=auto_master,dc=themaw,dc=net
+objectClass: top
+objectClass: automountMap
+automountMapName: auto_master
+
+dn: description=/ldap, automountMapName=auto_master,dc=themaw,dc=net
+objectClass: top
+objectClass: automount
+automountKey: /ldap
+automountInformation: ldap:budgie:automountMapName=auto_indirect,dc=themaw,dc=net
+description: /ldap
+
+dn: description=/-,automountMapName=auto_master,dc=themaw,dc=net
+objectClass: top
+objectClass: automount
+automountKey: /-
+automountInformation: ldap:budgie:automountMap=auto_direct,dc=themaw,dc=net
+description: /-
+

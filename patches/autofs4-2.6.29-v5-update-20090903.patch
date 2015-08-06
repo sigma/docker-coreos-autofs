@@ -1,0 +1,240 @@
+--- linux-2.6.29.orig/fs/autofs4/autofs_i.h
++++ linux-2.6.29/fs/autofs4/autofs_i.h
+@@ -186,6 +186,8 @@ int autofs4_expire_wait(struct dentry *d
+ int autofs4_expire_run(struct super_block *, struct vfsmount *,
+ 			struct autofs_sb_info *,
+ 			struct autofs_packet_expire __user *);
++int autofs4_do_expire_multi(struct super_block *sb, struct vfsmount *mnt,
++			    struct autofs_sb_info *sbi, int when);
+ int autofs4_expire_multi(struct super_block *, struct vfsmount *,
+ 			struct autofs_sb_info *, int __user *);
+ struct dentry *autofs4_expire_direct(struct super_block *sb,
+--- linux-2.6.29.orig/fs/autofs4/dev-ioctl.c
++++ linux-2.6.29/fs/autofs4/dev-ioctl.c
+@@ -525,40 +525,13 @@ static int autofs_dev_ioctl_expire(struc
+ 				   struct autofs_sb_info *sbi,
+ 				   struct autofs_dev_ioctl *param)
+ {
+-	struct dentry *dentry;
+ 	struct vfsmount *mnt;
+-	int err = -EAGAIN;
+ 	int how;
+ 
+ 	how = param->expire.how;
+ 	mnt = fp->f_path.mnt;
+ 
+-	if (autofs_type_trigger(sbi->type))
+-		dentry = autofs4_expire_direct(sbi->sb, mnt, sbi, how);
+-	else
+-		dentry = autofs4_expire_indirect(sbi->sb, mnt, sbi, how);
+-
+-	if (dentry) {
+-		struct autofs_info *ino = autofs4_dentry_ino(dentry);
+-
+-		/*
+-		 * This is synchronous because it makes the daemon a
+-		 * little easier
+-		*/
+-		err = autofs4_wait(sbi, dentry, NFY_EXPIRE);
+-
+-		spin_lock(&sbi->fs_lock);
+-		if (ino->flags & AUTOFS_INF_MOUNTPOINT) {
+-			ino->flags &= ~AUTOFS_INF_MOUNTPOINT;
+-			sbi->sb->s_root->d_mounted++;
+-		}
+-		ino->flags &= ~AUTOFS_INF_EXPIRING;
+-		complete_all(&ino->expire_complete);
+-		spin_unlock(&sbi->fs_lock);
+-		dput(dentry);
+-	}
+-
+-	return err;
++	return autofs4_do_expire_multi(sbi->sb, mnt, sbi, how);
+ }
+ 
+ /* Check if autofs mount point is in use */
+--- linux-2.6.29.orig/fs/autofs4/expire.c
++++ linux-2.6.29/fs/autofs4/expire.c
+@@ -70,8 +70,10 @@ static int autofs4_mount_busy(struct vfs
+ 		 * Otherwise it's an offset mount and we need to check
+ 		 * if we can umount its mount, if there is one.
+ 		 */
+-		if (!d_mountpoint(dentry))
++		if (!d_mountpoint(dentry)) {
++			status = 0;
+ 			goto done;
++		}
+ 	}
+ 
+ 	/* Update the expiry counter if fs is busy */
+@@ -478,22 +480,16 @@ int autofs4_expire_run(struct super_bloc
+ 	return ret;
+ }
+ 
+-/* Call repeatedly until it returns -EAGAIN, meaning there's nothing
+-   more to be done */
+-int autofs4_expire_multi(struct super_block *sb, struct vfsmount *mnt,
+-			struct autofs_sb_info *sbi, int __user *arg)
++int autofs4_do_expire_multi(struct super_block *sb, struct vfsmount *mnt,
++			    struct autofs_sb_info *sbi, int when)
+ {
+ 	struct dentry *dentry;
+ 	int ret = -EAGAIN;
+-	int do_now = 0;
+-
+-	if (arg && get_user(do_now, arg))
+-		return -EFAULT;
+ 
+ 	if (autofs_type_trigger(sbi->type))
+-		dentry = autofs4_expire_direct(sb, mnt, sbi, do_now);
++		dentry = autofs4_expire_direct(sb, mnt, sbi, when);
+ 	else
+-		dentry = autofs4_expire_indirect(sb, mnt, sbi, do_now);
++		dentry = autofs4_expire_indirect(sb, mnt, sbi, when);
+ 
+ 	if (dentry) {
+ 		struct autofs_info *ino = autofs4_dentry_ino(dentry);
+@@ -516,3 +512,16 @@ int autofs4_expire_multi(struct super_bl
+ 	return ret;
+ }
+ 
++/* Call repeatedly until it returns -EAGAIN, meaning there's nothing
++   more to be done */
++int autofs4_expire_multi(struct super_block *sb, struct vfsmount *mnt,
++			struct autofs_sb_info *sbi, int __user *arg)
++{
++	int do_now = 0;
++
++	if (arg && get_user(do_now, arg))
++		return -EFAULT;
++
++	return autofs4_do_expire_multi(sb, mnt, sbi, do_now);
++}
++
+--- linux-2.6.29.orig/fs/autofs4/root.c
++++ linux-2.6.29/fs/autofs4/root.c
+@@ -485,22 +485,6 @@ static struct dentry *autofs4_lookup(str
+ 	DPRINTK("pid = %u, pgrp = %u, catatonic = %d, oz_mode = %d",
+ 		 current->pid, task_pgrp_nr(current), sbi->catatonic, oz_mode);
+ 
+-	expiring = autofs4_lookup_expiring(sbi, dentry->d_parent, &dentry->d_name);
+-	if (expiring) {
+-		/*
+-		 * If we are racing with expire the request might not
+-		 * be quite complete but the directory has been removed
+-		 * so it must have been successful, so just wait for it.
+-		 */
+-		ino = autofs4_dentry_ino(expiring);
+-		autofs4_expire_wait(expiring);
+-		spin_lock(&sbi->lookup_lock);
+-		if (!list_empty(&ino->expiring))
+-			list_del_init(&ino->expiring);
+-		spin_unlock(&sbi->lookup_lock);
+-		dput(expiring);
+-	}
+-
+ 	unhashed = autofs4_lookup_active(sbi, dentry->d_parent, &dentry->d_name);
+ 	if (unhashed)
+ 		dentry = unhashed;
+@@ -538,14 +522,31 @@ static struct dentry *autofs4_lookup(str
+ 	}
+ 
+ 	if (!oz_mode) {
++		mutex_unlock(&dir->i_mutex);
++		expiring = autofs4_lookup_expiring(sbi,
++						   dentry->d_parent,
++						   &dentry->d_name);
++		if (expiring) {
++			/*
++			 * If we are racing with expire the request might not
++			 * be quite complete but the directory has been removed
++			 * so it must have been successful, so just wait for it.
++			 */
++			ino = autofs4_dentry_ino(expiring);
++			autofs4_expire_wait(expiring);
++			spin_lock(&sbi->lookup_lock);
++			if (!list_empty(&ino->expiring))
++				list_del_init(&ino->expiring);
++			spin_unlock(&sbi->lookup_lock);
++			dput(expiring);
++		}
++
+ 		spin_lock(&dentry->d_lock);
+ 		dentry->d_flags |= DCACHE_AUTOFS_PENDING;
+ 		spin_unlock(&dentry->d_lock);
+-		if (dentry->d_op && dentry->d_op->d_revalidate) {
+-			mutex_unlock(&dir->i_mutex);
++		if (dentry->d_op && dentry->d_op->d_revalidate)
+ 			(dentry->d_op->d_revalidate)(dentry, nd);
+-			mutex_lock(&dir->i_mutex);
+-		}
++		mutex_lock(&dir->i_mutex);
+ 	}
+ 
+ 	/*
+--- linux-2.6.29.orig/include/linux/auto_dev-ioctl.h
++++ linux-2.6.29/include/linux/auto_dev-ioctl.h
+@@ -10,8 +10,13 @@
+ #ifndef _LINUX_AUTO_DEV_IOCTL_H
+ #define _LINUX_AUTO_DEV_IOCTL_H
+ 
++#include <linux/auto_fs.h>
++
++#ifdef __KERNEL__
+ #include <linux/string.h>
+-#include <linux/types.h>
++#else
++#include <string.h>
++#endif /* __KERNEL__ */
+ 
+ #define AUTOFS_DEVICE_NAME		"autofs"
+ 
+--- linux-2.6.29.orig/include/linux/auto_fs.h
++++ linux-2.6.29/include/linux/auto_fs.h
+@@ -17,11 +17,13 @@
+ #ifdef __KERNEL__
+ #include <linux/fs.h>
+ #include <linux/limits.h>
++#include <linux/types.h>
++#include <linux/ioctl.h>
++#else
+ #include <asm/types.h>
++#include <sys/ioctl.h>
+ #endif /* __KERNEL__ */
+ 
+-#include <linux/ioctl.h>
+-
+ /* This file describes autofs v3 */
+ #define AUTOFS_PROTO_VERSION	3
+ 
+--- linux-2.6.29.orig/fs/autofs4/waitq.c
++++ linux-2.6.29/fs/autofs4/waitq.c
+@@ -297,20 +297,14 @@ static int validate_request(struct autof
+ 	 */
+ 	if (notify == NFY_MOUNT) {
+ 		/*
+-		 * If the dentry isn't hashed just go ahead and try the
+-		 * mount again with a new wait (not much else we can do).
+-		*/
+-		if (!d_unhashed(dentry)) {
+-			/*
+-			 * But if the dentry is hashed, that means that we
+-			 * got here through the revalidate path.  Thus, we
+-			 * need to check if the dentry has been mounted
+-			 * while we waited on the wq_mutex. If it has,
+-			 * simply return success.
+-			 */
+-			if (d_mountpoint(dentry))
+-				return 0;
+-		}
++		 * If the dentry was successfully mounted while we slept
++		 * on the wait queue mutex we can return success. If it
++		 * isn't mounted (doesn't have submounts for the case of
++		 * a multi-mount with no mount at it's base) we can
++		 * continue on and create a new request.
++		 */
++		if (have_submounts(dentry))
++			return 0;
+ 	}
+ 
+ 	return 1;

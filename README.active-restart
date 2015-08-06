@@ -1,0 +1,114 @@
+
+The problem
+-----------
+
+The initial release of autofs version 5 used the "umount -l" (lazy
+umount) to clear stale mounts at startup so that new mounts could
+be made with a clean slate. This proved to be a bad choice because
+the lazy umount removes the mount from the kernel mount tree. While
+the mount itself persists (invisibe to further VFS lookups) until
+the mount isn't busy anymore the kernel function d_path(), used to
+calculate the path from the mount point to the root, isn't able to
+perform its function any more. This leads to things that use d_path(),
+such as /bin/pwd, the contents of the link /proc/<pid>/cwd, and so on.
+
+The actual problem with autofs is that it can't re-connect to existing
+mounts. Immediately one thinks of just adding the ability to remount
+the autofs file system would solve it, but that can't work. This is
+because autofs direct mounts and the implementation of "on demand mount
+and expire" of nested mount trees i(multi-mounts) have the file system
+mounted directly on top of the mount trigger directory.
+
+For example, there are two types of automount maps, direct (in the kernel
+module source you will see a third type called an offset, which is just
+a direct mount in disguise) and indirect.
+
+Here is a master map with direct and indirect map entries:
+
+/-      /etc/auto.direct
+/test   /etc/auto.indirect
+
+and the corresponding map files:
+
+/etc/auto.direct:
+
+/automount/dparse/g6  budgie:/autofs/export1
+/automount/dparse/g1  shark:/autofs/export1
+and so on.
+
+/etc/auto.indirect:
+
+g1    shark:/autofs/export1
+g6    budgie:/autofs/export1
+and so on.
+
+For the above indirect map an autofs file system is mounted on /test and
+mounts are triggered for each sub-directory key. So we see a mount of
+shark:/autofs/export1 on /test/g1, for example.
+
+The way that direct mounts are handled is by making an autofs mount on
+each full path, such as /automount/dparse/g1, and using it as a mount
+trigger. So when we walk on the path we mount shark:/autofs/export1 "on
+top of this mount point".
+
+But, each entry in direct and indirect maps can have offsets (making
+them multi-mount map entries).
+
+For example, an indirect mount map entry could also be:
+
+g1  \
+   /        shark:/autofs/export5/testing/test \
+   /s1      shark:/autofs/export/testing/test/s1 \
+   /s2      shark:/autofs/export5/testing/test/s2 \
+   /s1/ss1  shark:/autofs/export1 \
+   /s2/ss2  shark:/autofs/export2
+
+and a similarly a direct mount map entry could also be:
+
+/automount/dparse/g1 \
+    /       shark:/autofs/export5/testing/test \
+    /s1     shark:/autofs/export/testing/test/s1 \
+    /s2     shark:/autofs/export5/testing/test/s2 \
+    /s1/ss1 shark:/autofs/export2 \
+    /s2/ss2 shark:/autofs/export2
+
+One of the issues with version 4 of autofs was that, when mounting an
+entry with a large number of offsets, possibly with nesting, we needed
+to mount and umount all of the offsets as a single unit. Not really a
+problem, except for people with a large number of offsets in map entries.
+This mechanism is used for the well known "hosts" map and we have seen
+cases (in 2.4) where the available number of mounts are exhausted or
+where the number of privileged ports available is exhausted.
+
+In version 5 we mount only as we go down the tree of offsets and
+similarly for expiring them which resolves the above problem. There is
+somewhat more detail to the implementation but it isn't needed for the
+sake of the problem explanation. The one important detail is that these
+offsets are implemented using the same mechanism as the direct mounts
+above and so the autofs mount points can be covered by another mount.
+
+To be able to restart autofs leaving existing direct, indirect and
+offset mounts in place we need to be able to obtain a file handle
+for these potentially covered autofs mount points. To do this the
+autofs ioctl control implementation has been re-implemented,
+providing the same functions as the existing ioctl interface and
+new operations to the ability to open a file handle on a covered
+autofs mount point.
+
+In order to utilize the new interface both kernel and user space
+changes (included in this release) are needed. The default install
+of autofs won't use the new interface unless it is enabled in the
+configuration. This can be done by setting "USE_MISC_DEVICE" to "yes"
+in the autofs configuration. In addition, if selinux is being used,
+it will likely need to allow operations on the autofs device file
+or be set to permissive mode.
+
+Patches for several recent kernel that don't have the implementation
+can be found in the patches directory. They have "dev-ioctl" in their
+name. Note that, to use these patches, you should be using a kernel
+patched with all the current autofs bug fixes since, apart from porobably
+not working, the patch probably won't apply either. The bug fix patches
+can also be found in the patches directory and they have "v5-update" in
+their names.
+
+Ian
